@@ -1,0 +1,2333 @@
+@charset "UTF-8";
+:root {
+    --jm-header-height: 74px;
+    --jm-page-max: 2000px;
+    --jm-page-gutter: 56px;
+    --jm-layout-gap: clamp(30px, 2vw, 42px);
+    --jm-mypage-sidebar-width: clamp(280px, 17.1vw, 352px);
+    --jm-navy: #1e2d4d;
+    --jm-red: #ff4d4d;
+    --jm-border: #b8b8b8;
+    --jm-soft-border: #e8eaf0;
+    --jm-text: #111111;
+    --jm-muted: #777777;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    width: 100%;
+    min-height: 100%;
+    scroll-behavior: smooth;
+}
+
+body.mypage,
+body.mypage-body {
+    width: 100% !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding-top: var(--jm-header-height) !important;
+    background: #ffffff !important;
+    color: var(--jm-text) !important;
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow-x: hidden !important;
+}
+
+body.mypage a,
+body.mypage-body a {
+    color: inherit;
+    text-decoration: none;
+}
+
+body.mypage button,
+body.mypage-body button,
+body.mypage input,
+body.mypage-body input,
+body.mypage select,
+body.mypage-body select,
+body.mypage textarea,
+body.mypage-body textarea {
+    font-family: inherit;
+}
+
+/* =========================================================
+   1. OTT 공통 header / header sidebar / footer 연동
+   - 여기서는 색상, 로고, footer 내부 디자인을 덮지 않음
+   - 공통 jspf + 공통 CSS가 가진 디자인을 그대로 사용하도록 z-index/표시만 보정
+========================================================= */
+
+body.mypage .site-header,
+body.mypage-body .site-header,
+body.mypage > header,
+body.mypage-body > header,
+body.mypage > .header,
+body.mypage-body > .header,
+body.mypage > .main-header,
+body.mypage-body > .main-header,
+body.mypage > .global-header,
+body.mypage-body > .global-header,
+body.mypage > .common-header,
+body.mypage-body > .common-header,
+body.mypage > .app-header,
+body.mypage-body > .app-header,
+body.mypage > #header,
+body.mypage-body > #header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9000 !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
+}
+
+body.mypage .hamburger-btn,
+body.mypage-body .hamburger-btn,
+body.mypage .menu-toggle,
+body.mypage-body .menu-toggle {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 9201 !important;
+}
+
+body.mypage .sidebar,
+body.mypage-body .sidebar,
+body.mypage .side-bar,
+body.mypage-body .side-bar,
+body.mypage .side-nav,
+body.mypage-body .side-nav,
+body.mypage .side-menu,
+body.mypage-body .side-menu,
+body.mypage .sidebar-menu,
+body.mypage-body .sidebar-menu,
+body.mypage .mobile-menu,
+body.mypage-body .mobile-menu,
+body.mypage .mobile-sidebar,
+body.mypage-body .mobile-sidebar,
+body.mypage .menu-drawer,
+body.mypage-body .menu-drawer,
+body.mypage .drawer-menu,
+body.mypage-body .drawer-menu,
+body.mypage .nav-drawer,
+body.mypage-body .nav-drawer,
+body.mypage .header-sidebar,
+body.mypage-body .header-sidebar,
+body.mypage .global-sidebar,
+body.mypage-body .global-sidebar,
+body.mypage .layout-sidebar,
+body.mypage-body .layout-sidebar {
+    z-index: 9200 !important;
+}
+
+body.mypage.is-sidebar-open .sidebar,
+body.mypage-body.is-sidebar-open .sidebar,
+body.mypage.sidebar-open .sidebar,
+body.mypage-body.sidebar-open .sidebar,
+body.mypage.is-sidebar-open .side-bar,
+body.mypage-body.is-sidebar-open .side-bar,
+body.mypage.sidebar-open .side-bar,
+body.mypage-body.sidebar-open .side-bar,
+body.mypage.is-sidebar-open .side-menu,
+body.mypage-body.is-sidebar-open .side-menu,
+body.mypage.sidebar-open .side-menu,
+body.mypage-body.sidebar-open .side-menu,
+body.mypage.is-sidebar-open .menu-drawer,
+body.mypage-body.is-sidebar-open .menu-drawer,
+body.mypage.sidebar-open .menu-drawer,
+body.mypage-body.sidebar-open .menu-drawer,
+body.mypage.is-sidebar-open .nav-drawer,
+body.mypage-body.is-sidebar-open .nav-drawer,
+body.mypage.sidebar-open .nav-drawer,
+body.mypage-body.sidebar-open .nav-drawer,
+body.mypage .sidebar.open,
+body.mypage-body .sidebar.open,
+body.mypage .sidebar.is-open,
+body.mypage-body .sidebar.is-open,
+body.mypage .sidebar.active,
+body.mypage-body .sidebar.active,
+body.mypage .sidebar.show,
+body.mypage-body .sidebar.show,
+body.mypage .side-menu.open,
+body.mypage-body .side-menu.open,
+body.mypage .side-menu.is-open,
+body.mypage-body .side-menu.is-open,
+body.mypage .side-menu.active,
+body.mypage-body .side-menu.active,
+body.mypage .side-menu.show,
+body.mypage-body .side-menu.show,
+body.mypage .menu-drawer.open,
+body.mypage-body .menu-drawer.open,
+body.mypage .menu-drawer.is-open,
+body.mypage-body .menu-drawer.is-open,
+body.mypage .menu-drawer.active,
+body.mypage-body .menu-drawer.active,
+body.mypage .nav-drawer.open,
+body.mypage-body .nav-drawer.open,
+body.mypage .nav-drawer.is-open,
+body.mypage-body .nav-drawer.is-open,
+body.mypage .nav-drawer.active,
+body.mypage-body .nav-drawer.active,
+body.mypage nav.sidebar.open,
+body.mypage-body nav.sidebar.open,
+body.mypage nav.sidebar.is-open,
+body.mypage-body nav.sidebar.is-open,
+body.mypage nav.sidebar.active,
+body.mypage-body nav.sidebar.active,
+body.mypage nav.sidebar.show,
+body.mypage-body nav.sidebar.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: translateX(0) !important;
+    left: 0 !important;
+}
+
+body.mypage .floating-buttons,
+body.mypage-body .floating-buttons,
+body.mypage .floating-btn,
+body.mypage-body .floating-btn {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+body.mypage > footer,
+body.mypage-body > footer,
+body.mypage .footer,
+body.mypage-body .footer,
+body.mypage .site-footer,
+body.mypage-body .site-footer,
+body.mypage .footer-wrap,
+body.mypage-body .footer-wrap,
+body.mypage .common-footer,
+body.mypage-body .common-footer,
+body.mypage .app-footer,
+body.mypage-body .app-footer {
+    width: 100% !important;
+    max-width: none !important;
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
+    transform: none !important;
+}
+
+/* =========================================================
+   2. 전체 마이페이지 레이아웃
+========================================================= */
+
+body.mypage .mypage-container,
+body.mypage-body .mypage-container,
+body.mypage .container,
+body.mypage-body .container {
+    width: min(calc(100% - var(--jm-page-gutter)), var(--jm-page-max)) !important;
+    max-width: var(--jm-page-max) !important;
+    margin: 0 auto !important;
+    padding: clamp(74px, 6.2vw, 104px) 0 clamp(80px, 5vw, 118px) !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: var(--jm-layout-gap) !important;
+    flex: 1 0 auto !important;
+}
+
+body.mypage main,
+body.mypage-body main,
+body.mypage .dashboard,
+body.mypage-body .dashboard,
+body.mypage .mypost-main,
+body.mypage-body .mypost-main,
+body.mypage .question-main,
+body.mypage-body .question-main,
+body.mypage .report-main,
+body.mypage-body .report-main,
+body.mypage .alarm-main,
+body.mypage-body .alarm-main,
+body.mypage .manage-container,
+body.mypage-body .manage-container,
+body.mypage .manage-content,
+body.mypage-body .manage-content,
+body.mypage .subscription-main,
+body.mypage-body .subscription-main,
+body.mypage .sales-main,
+body.mypage-body .sales-main,
+body.mypage .sales-list-main,
+body.mypage-body .sales-list-main {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
+body.mypage .dashboard,
+body.mypage-body .dashboard {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: clamp(26px, 1.8vw, 34px) !important;
+}
+
+/* =========================================================
+   3. 마이페이지 전용 사이드바
+========================================================= */
+
+body.mypage .mypage-sidebar,
+body.mypage-body .mypage-sidebar {
+    flex: 0 0 var(--jm-mypage-sidebar-width) !important;
+    width: var(--jm-mypage-sidebar-width) !important;
+    min-width: var(--jm-mypage-sidebar-width) !important;
+    max-width: var(--jm-mypage-sidebar-width) !important;
+    display: block !important;
+}
+
+body.mypage .mypage-sidebar-fixed,
+body.mypage-body .mypage-sidebar-fixed {
+    position: sticky !important;
+    top: calc(var(--jm-header-height) + 28px) !important;
+    width: var(--jm-mypage-sidebar-width) !important;
+    min-width: var(--jm-mypage-sidebar-width) !important;
+    max-width: var(--jm-mypage-sidebar-width) !important;
+    min-height: clamp(760px, calc(100vh - 238px), 1160px) !important;
+    background: #ffffff !important;
+    border: 1px solid var(--jm-border) !important;
+    border-radius: 26px !important;
+    padding: 54px 0 !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+}
+
+body.mypage .mypage-sidebar-fixed ul,
+body.mypage-body .mypage-sidebar-fixed ul {
+    width: 100% !important;
+    min-height: clamp(650px, calc(100vh - 350px), 980px) !important;
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+}
+
+body.mypage .mypage-sidebar-fixed li,
+body.mypage-body .mypage-sidebar-fixed li {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+body.mypage .mypage-sidebar-fixed li a,
+body.mypage-body .mypage-sidebar-fixed li a {
+    width: 100% !important;
+    min-height: 64px !important;
+    padding: 0 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #111111 !important;
+    font-size: clamp(15px, 0.95vw, 18px) !important;
+    font-weight: 600 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    transition: background 0.2s ease, color 0.2s ease, font-weight 0.2s ease !important;
+}
+
+body.mypage .mypage-sidebar-fixed li a:hover,
+body.mypage-body .mypage-sidebar-fixed li a:hover {
+    background: #fff6f6 !important;
+    color: var(--jm-red) !important;
+}
+
+body.mypage .mypage-sidebar-fixed li.active a,
+body.mypage-body .mypage-sidebar-fixed li.active a {
+    background: #fff3f3 !important;
+    color: var(--jm-red) !important;
+    font-weight: 800 !important;
+}
+
+/* =========================================================
+   4. MyPage 메인 카드 - A/B, C/D 위치 보정 포함
+========================================================= */
+
+body.mypage .profile-combined-card,
+body.mypage-body .profile-combined-card {
+    width: 100% !important;
+    min-height: clamp(430px, 36vh, 540px) !important;
+    background: #ffffff !important;
+    border: 1px solid var(--jm-border) !important;
+    border-radius: 26px !important;
+    padding: clamp(34px, 2.35vw, 48px) !important;
+    box-shadow: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.45fr) minmax(340px, 0.72fr) !important;
+    align-items: center !important;
+    gap: clamp(38px, 3vw, 76px) !important;
+}
+
+body.mypage .info-side,
+body.mypage-body .info-side {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: clamp(350px, 29vh, 440px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+}
+
+body.mypage .card-title-center,
+body.mypage-body .card-title-center {
+    margin: 0 0 clamp(24px, 2vw, 38px) !important;
+    color: #111111 !important;
+    font-size: clamp(20px, 1.15vw, 25px) !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+}
+
+body.mypage .info-body,
+body.mypage-body .info-body {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    min-height: clamp(290px, 25vh, 360px) !important;
+    display: grid !important;
+    grid-template-columns: clamp(165px, 10.5vw, 220px) minmax(0, 1fr) !important;
+    gap: clamp(38px, 3.2vw, 68px) !important;
+    align-items: center !important;
+    padding-top: clamp(14px, 1.2vw, 28px) !important;
+}
+
+body.mypage .profile-section,
+body.mypage-body .profile-section {
+    min-height: clamp(290px, 25vh, 350px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+}
+
+body.mypage .profile-img-box,
+body.mypage-body .profile-img-box {
+    width: clamp(160px, 10.5vw, 200px) !important;
+    height: clamp(160px, 10.5vw, 200px) !important;
+    margin: 0 auto !important;
+    border-radius: 50% !important;
+    background: #243864 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+body.mypage .profile-img-box img,
+body.mypage-body .profile-img-box img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+body.mypage .edit-info-btn,
+body.mypage-body .edit-info-btn {
+    width: clamp(160px, 10.5vw, 200px) !important;
+    height: 44px !important;
+    margin: clamp(42px, 3.4vw, 72px) auto 0 !important;
+    border: none !important;
+    border-radius: 12px !important;
+    background: var(--jm-navy) !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    cursor: pointer !important;
+    transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+
+body.mypage .edit-info-btn:hover,
+body.mypage-body .edit-info-btn:hover {
+    opacity: 0.92 !important;
+    transform: translateY(-1px) !important;
+}
+
+body.mypage .text-area,
+body.mypage-body .text-area {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding-top: clamp(18px, 1.6vw, 34px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+body.mypage .info-row,
+body.mypage-body .info-row {
+    min-height: 56px !important;
+    padding: 0 !important;
+    border-bottom: 1px solid #dfe2e8 !important;
+    display: grid !important;
+    grid-template-columns: 120px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 16px !important;
+}
+
+body.mypage .info-row span,
+body.mypage-body .info-row span,
+body.mypage .info-row strong,
+body.mypage-body .info-row strong {
+    color: #111111 !important;
+    font-size: clamp(15px, 0.95vw, 18px) !important;
+    font-weight: 800 !important;
+    word-break: break-word !important;
+}
+
+body.mypage .withdraw-container,
+body.mypage-body .withdraw-container {
+    display: flex !important;
+    justify-content: flex-end !important;
+    margin-top: clamp(62px, 4vw, 92px) !important;
+}
+
+body.mypage .withdraw-link,
+body.mypage-body .withdraw-link {
+    color: #111111 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
+}
+
+/* =========================================================
+   5. 계좌 카드
+========================================================= */
+
+body.mypage .alert-side,
+body.mypage-body .alert-side {
+    width: 100% !important;
+    max-width: 440px !important;
+    justify-self: end !important;
+    background: #ffffff !important;
+    border: 1px solid var(--jm-soft-border) !important;
+    border-radius: 20px !important;
+    padding: clamp(24px, 1.8vw, 32px) !important;
+    box-shadow: 0 8px 22px rgba(17, 24, 39, 0.04) !important;
+}
+
+body.mypage .single-account-box,
+body.mypage-body .single-account-box {
+    width: 100% !important;
+    min-height: 250px !important;
+    border: 2px solid var(--jm-navy) !important;
+    border-radius: 20px !important;
+    background: #f8fafc !important;
+    padding: 24px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+}
+
+body.mypage .account-info-card,
+body.mypage-body .account-info-card {
+    background: #ffffff !important;
+    border: 1px solid #eef0f4 !important;
+    border-radius: 14px !important;
+    padding: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+}
+
+body.mypage .account-top,
+body.mypage-body .account-top {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    min-width: 0 !important;
+}
+
+body.mypage .main-bank-logo,
+body.mypage-body .main-bank-logo {
+    width: 46px !important;
+    height: 46px !important;
+    flex: 0 0 46px !important;
+    border-radius: 50% !important;
+    background: var(--jm-navy) !important;
+    color: #ffffff !important;
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+body.mypage .main-bank-info,
+body.mypage-body .main-bank-info {
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+}
+
+body.mypage .main-bank-info strong,
+body.mypage-body .main-bank-info strong {
+    color: #111111 !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+}
+
+body.mypage .main-bank-info span,
+body.mypage-body .main-bank-info span {
+    color: #555555 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    word-break: break-all !important;
+}
+
+body.mypage .account-notice,
+body.mypage-body .account-notice {
+    width: 100% !important;
+    min-height: 58px !important;
+    margin: 0 !important;
+    padding: 13px 15px !important;
+    border: 1px solid #edf0f4 !important;
+    border-radius: 12px !important;
+    background: #ffffff !important;
+    color: #777777 !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    line-height: 1.55 !important;
+}
+
+body.mypage .change-account-btn,
+body.mypage-body .change-account-btn,
+body.mypage .add-account-btn,
+body.mypage-body .add-account-btn {
+    width: 100% !important;
+    height: 48px !important;
+    border: none !important;
+    border-radius: 12px !important;
+    background: var(--jm-navy) !important;
+    color: #ffffff !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    cursor: pointer !important;
+    transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+
+body.mypage .change-account-btn:hover,
+body.mypage-body .change-account-btn:hover,
+body.mypage .add-account-btn:hover,
+body.mypage-body .add-account-btn:hover {
+    opacity: 0.94 !important;
+    transform: translateY(-1px) !important;
+}
+
+/* =========================================================
+   6. 대시보드 하단 카드
+========================================================= */
+
+body.mypage .bottom-row,
+body.mypage-body .bottom-row {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: clamp(28px, 2vw, 44px) !important;
+}
+
+body.mypage .dashboard > .bottom-row .mypost-card,
+body.mypage-body .dashboard > .bottom-row .mypost-card,
+body.mypage .dashboard > .bottom-row .goal-card,
+body.mypage-body .dashboard > .bottom-row .goal-card,
+body.mypage .dashboard > .bottom-row .card,
+body.mypage-body .dashboard > .bottom-row .card {
+    min-width: 0 !important;
+    min-height: clamp(430px, 43vh, 620px) !important;
+    background: #ffffff !important;
+    border: 1px solid var(--jm-border) !important;
+    border-radius: 26px !important;
+    padding: clamp(28px, 2vw, 42px) !important;
+    box-shadow: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+body.mypage .card-header-group,
+body.mypage-body .card-header-group {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 18px !important;
+    border-bottom: 2px solid #111111 !important;
+    padding-bottom: 12px !important;
+    margin-bottom: 22px !important;
+}
+
+body.mypage .card-title,
+body.mypage-body .card-title,
+body.mypage .section-title,
+body.mypage-body .section-title {
+    margin: 0 !important;
+    padding: 0 !important;
+    border-bottom: 0 !important;
+    color: #111111 !important;
+    font-size: clamp(19px, 1.2vw, 24px) !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+}
+
+body.mypage .more-link,
+body.mypage-body .more-link {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #111111 !important;
+    white-space: nowrap !important;
+}
+
+body.mypage .subscription-list,
+body.mypage-body .subscription-list {
+    width: 100% !important;
+}
+
+body.mypage .sub-item,
+body.mypage-body .sub-item,
+body.mypage .dashboard-sub-item,
+body.mypage-body .dashboard-sub-item {
+    width: 100% !important;
+    padding: 22px 0 !important;
+    border-bottom: 1px solid #eef0f4 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: clamp(18px, 1.6vw, 30px) !important;
+}
+
+body.mypage .sub-item:last-child,
+body.mypage-body .sub-item:last-child {
+    border-bottom: none !important;
+}
+
+body.mypage .sub-info,
+body.mypage-body .sub-info {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 7px !important;
+}
+
+body.mypage .sub-info strong,
+body.mypage-body .sub-info strong,
+body.mypage .sub-info b,
+body.mypage-body .sub-info b {
+    color: #111111 !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+}
+
+body.mypage .sub-meta,
+body.mypage-body .sub-meta {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    color: #666666 !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+}
+
+body.mypage .status-badge,
+body.mypage-body .status-badge {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #555555 !important;
+}
+
+body.mypage .status-badge.active,
+body.mypage-body .status-badge.active {
+    color: #555555 !important;
+}
+
+body.mypage .sub-price,
+body.mypage-body .sub-price {
+    min-width: 120px !important;
+    margin-left: auto !important;
+    text-align: right !important;
+    font-size: 15px !important;
+    white-space: nowrap !important;
+}
+
+body.mypage .sub-price strong,
+body.mypage-body .sub-price strong {
+    font-weight: 900 !important;
+}
+
+body.mypage .sub-list-logo,
+body.mypage-body .sub-list-logo,
+body.mypage .sub-icon,
+body.mypage-body .sub-icon {
+    width: clamp(58px, 4.2vw, 76px) !important;
+    height: clamp(58px, 4.2vw, 76px) !important;
+    flex: 0 0 clamp(58px, 4.2vw, 76px) !important;
+    border-radius: 16px !important;
+    background-color: #ffffff !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+}
+
+body.mypage .sub-list-logo img,
+body.mypage-body .sub-list-logo img,
+body.mypage .sub-icon img,
+body.mypage-body .sub-icon img {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    display: block !important;
+}
+
+body.mypage .sub-list-logo.logo-fallback::before,
+body.mypage-body .sub-list-logo.logo-fallback::before,
+body.mypage .sub-logo-small.logo-fallback::before,
+body.mypage-body .sub-logo-small.logo-fallback::before {
+    content: attr(data-initial);
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    background: var(--jm-navy);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+body.mypage .progress-bg,
+body.mypage-body .progress-bg {
+    width: 100% !important;
+    height: 34px !important;
+    margin-top: 16px !important;
+    border-radius: 999px !important;
+    background: #dbe5ec !important;
+    overflow: hidden !important;
+}
+
+body.mypage .progress-fill,
+body.mypage-body .progress-fill,
+body.mypage .progress-bar,
+body.mypage-body .progress-bar {
+    height: 100% !important;
+    min-width: 0 !important;
+    border-radius: 999px !important;
+    background: #83f754 !important;
+    color: #111111 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: 800 !important;
+}
+
+body.mypage .empty-card-message,
+body.mypage-body .empty-card-message,
+body.mypage .empty-subscription-card,
+body.mypage-body .empty-subscription-card,
+body.mypage .empty-history-message,
+body.mypage-body .empty-history-message {
+    width: 100% !important;
+    min-height: 180px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    color: #333333 !important;
+    font-size: 15px !important;
+}
+
+/* =========================================================
+   7. 서브 페이지 공통 카드 / 테이블
+========================================================= */
+
+body.mypage .page-title,
+body.mypage-body .page-title {
+    margin: 0 0 24px !important;
+    color: #111111 !important;
+    font-size: clamp(30px, 2vw, 44px) !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.04em !important;
+}
+
+body.mypage .mypost-main .mypost-card,
+body.mypage-body .mypost-main .mypost-card,
+body.mypage .question-card,
+body.mypage-body .question-card,
+body.mypage .report-card,
+body.mypage-body .report-card,
+body.mypage .alarm-card,
+body.mypage-body .alarm-card,
+body.mypage .sales-card,
+body.mypage-body .sales-card,
+body.mypage .history-card,
+body.mypage-body .history-card,
+body.mypage .post-card,
+body.mypage-body .post-card,
+body.mypage .manage-card,
+body.mypage-body .manage-card,
+body.mypage .common-card,
+body.mypage-body .common-card {
+    width: 100% !important;
+    min-height: 760px !important;
+    background: #ffffff !important;
+    border: 1px solid #dbdbdb !important;
+    border-radius: 24px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04) !important;
+    padding: 30px 35px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+}
+
+body.mypage .table-header,
+body.mypage-body .table-header {
+    display: flex !important;
+    align-items: center !important;
+    height: 52px !important;
+    border-top: 1px solid #dcdcdc !important;
+    border-bottom: 1px solid #dcdcdc !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #222222 !important;
+    background: #fafafa !important;
+    box-sizing: border-box !important;
+}
+
+body.mypage .table-row,
+body.mypage-body .table-row,
+body.mypage .alarm-row,
+body.mypage-body .alarm-row {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 62px !important;
+    border-bottom: 1px solid #eeeeee !important;
+    font-size: 13px !important;
+    color: #222222 !important;
+    transition: 0.2s !important;
+    box-sizing: border-box !important;
+}
+
+body.mypage .table-row:hover,
+body.mypage-body .table-row:hover,
+body.mypage .alarm-row:hover,
+body.mypage-body .alarm-row:hover {
+    background: #fcfcfc !important;
+}
+
+body.mypage .empty-line,
+body.mypage-body .empty-line {
+    height: 62px !important;
+    border-bottom: 1px solid #eeeeee !important;
+    box-sizing: border-box !important;
+}
+
+body.mypage .pagination,
+body.mypage-body .pagination {
+    margin-top: auto !important;
+    padding-top: 28px !important;
+    text-align: center !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #666666 !important;
+}
+
+/* =========================================================
+   8. 알림 토글 - 기존 디자인 유지
+========================================================= */
+
+body.mypage .email-alarm-setting,
+body.mypage-body .email-alarm-setting {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+}
+
+body.mypage .switch,
+body.mypage-body .switch {
+    position: relative !important;
+    display: inline-block !important;
+    width: 54px !important;
+    height: 30px !important;
+}
+
+body.mypage .switch input,
+body.mypage-body .switch input {
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+body.mypage .slider,
+body.mypage-body .slider {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: #d1d5db !important;
+    border-radius: 50px !important;
+    transition: 0.3s !important;
+    cursor: pointer !important;
+}
+
+body.mypage .slider::before,
+body.mypage-body .slider::before {
+    content: "" !important;
+    position: absolute !important;
+    width: 24px !important;
+    height: 24px !important;
+    left: 3px !important;
+    bottom: 3px !important;
+    background: #ffffff !important;
+    border-radius: 50% !important;
+    transition: 0.3s !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.mypage .switch input:checked + .slider,
+body.mypage-body .switch input:checked + .slider {
+    background: var(--jm-red) !important;
+}
+
+body.mypage .switch input:checked + .slider::before,
+body.mypage-body .switch input:checked + .slider::before {
+    transform: translateX(24px) !important;
+}
+
+/* =========================================================
+   9. 구독 관리 페이지
+========================================================= */
+
+body.mypage .manage-container,
+body.mypage-body .manage-container,
+body.mypage .manage-content,
+body.mypage-body .manage-content {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+body.mypage .tab-menu,
+body.mypage-body .tab-menu {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 42px !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 44px !important;
+    border-bottom: 2px solid #111111 !important;
+}
+
+body.mypage .tab,
+body.mypage-body .tab {
+    appearance: none !important;
+    border: 0 !important;
+    background: transparent !important;
+    position: relative !important;
+    padding: 14px 0 12px !important;
+    color: #111111 !important;
+    font-size: clamp(17px, 1vw, 20px) !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: color 0.2s ease !important;
+}
+
+body.mypage .tab.active,
+body.mypage-body .tab.active {
+    color: var(--jm-red) !important;
+    font-weight: 800 !important;
+}
+
+body.mypage .tab.active::before,
+body.mypage-body .tab.active::before {
+    content: "" !important;
+    position: absolute !important;
+    top: -2px !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 3px !important;
+    border-radius: 999px !important;
+    background: var(--jm-red) !important;
+}
+
+body.mypage .tab-content,
+body.mypage-body .tab-content {
+    display: none !important;
+}
+
+body.mypage .tab-content.active,
+body.mypage-body .tab-content.active {
+    display: block !important;
+}
+
+body.mypage .manage-grid,
+body.mypage-body .manage-grid {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: clamp(28px, 2.2vw, 42px) !important;
+    align-items: start !important;
+}
+
+body.mypage .manage-left,
+body.mypage-body .manage-left,
+body.mypage .manage-right,
+body.mypage-body .manage-right,
+body.mypage .subscription-card-wrap,
+body.mypage-body .subscription-card-wrap {
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
+body.mypage .sub-manage-card,
+body.mypage-body .sub-manage-card,
+body.mypage .detail-card,
+body.mypage-body .detail-card {
+    width: 100% !important;
+    min-height: clamp(640px, 54vh, 820px) !important;
+    padding: clamp(28px, 2vw, 42px) !important;
+    border: 1px solid var(--jm-border) !important;
+    border-radius: 26px !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+}
+
+body.mypage .history-card,
+body.mypage-body .history-card {
+    width: 100% !important;
+    min-height: clamp(640px, 58vh, 880px) !important;
+    max-height: calc(100vh - 260px) !important;
+    overflow-y: auto !important;
+    padding: clamp(28px, 2vw, 42px) !important;
+    border: 1px solid var(--jm-border) !important;
+    border-radius: 26px !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+}
+
+body.mypage .card-header,
+body.mypage-body .card-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+    margin-bottom: 36px !important;
+}
+
+body.mypage .service-info,
+body.mypage-body .service-info,
+body.mypage .history-left,
+body.mypage-body .history-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+    min-width: 0 !important;
+}
+
+body.mypage .sub-logo-small,
+body.mypage-body .sub-logo-small {
+    width: clamp(52px, 3.4vw, 70px) !important;
+    height: clamp(52px, 3.4vw, 70px) !important;
+    flex: 0 0 clamp(52px, 3.4vw, 70px) !important;
+    border-radius: 16px !important;
+    background: #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    object-fit: contain !important;
+}
+
+body.mypage .sub-logo-small img,
+body.mypage-body .sub-logo-small img {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    display: block !important;
+}
+
+body.mypage .service-info h3,
+body.mypage-body .service-info h3 {
+    margin: 0 !important;
+    font-size: clamp(18px, 1.15vw, 23px) !important;
+    font-weight: 800 !important;
+    color: #111111 !important;
+}
+
+body.mypage .order-num,
+body.mypage-body .order-num {
+    margin: 8px 0 0 !important;
+    font-size: 13px !important;
+    color: #9ca3af !important;
+}
+
+body.mypage .card-btns,
+body.mypage-body .card-btns {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    flex-shrink: 0 !important;
+}
+
+body.mypage .btn-extend,
+body.mypage-body .btn-extend,
+body.mypage .btn-cancel,
+body.mypage-body .btn-cancel,
+body.mypage .btn-re-sub,
+body.mypage-body .btn-re-sub {
+    min-width: 96px !important;
+    height: 38px !important;
+    border-radius: 999px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+}
+
+body.mypage .btn-extend,
+body.mypage-body .btn-extend,
+body.mypage .btn-re-sub,
+body.mypage-body .btn-re-sub,
+body.mypage .view-terms,
+body.mypage-body .view-terms {
+    border: none !important;
+    background: var(--jm-navy) !important;
+    color: #ffffff !important;
+}
+
+body.mypage .btn-cancel,
+body.mypage-body .btn-cancel {
+    border: 1px solid #dbdbdb !important;
+    background: #ffffff !important;
+    color: #666666 !important;
+}
+
+body.mypage .order-log-box,
+body.mypage-body .order-log-box {
+    margin-top: 28px !important;
+    margin-bottom: 22px !important;
+    min-height: 150px !important;
+    background: #f5f6f8 !important;
+    border: 1px solid #eceef2 !important;
+    border-radius: 18px !important;
+    padding: 24px !important;
+}
+
+body.mypage .log-title,
+body.mypage-body .log-title {
+    margin: 0 0 22px !important;
+    color: #111111 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+}
+
+body.mypage .log-table,
+body.mypage-body .log-table,
+body.mypage .detail-info-table,
+body.mypage-body .detail-info-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+}
+
+body.mypage .log-table td,
+body.mypage-body .log-table td {
+    padding: 7px 0 !important;
+    font-size: 13px !important;
+    color: #666666 !important;
+}
+
+body.mypage .log-table .text-right,
+body.mypage-body .log-table .text-right {
+    text-align: right !important;
+    color: #444444 !important;
+    font-weight: 700 !important;
+}
+
+body.mypage .view-terms,
+body.mypage-body .view-terms {
+    width: 100% !important;
+    height: 56px !important;
+    margin: 0 0 18px !important;
+    border-radius: 12px !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    cursor: pointer !important;
+}
+
+body.mypage .detail-info-table,
+body.mypage-body .detail-info-table {
+    margin-top: auto !important;
+}
+
+body.mypage .detail-info-table th,
+body.mypage-body .detail-info-table th,
+body.mypage .detail-info-table td,
+body.mypage-body .detail-info-table td {
+    padding: 15px 0 !important;
+    border-bottom: 1px solid #eeeeee !important;
+    font-size: 14px !important;
+}
+
+body.mypage .detail-info-table th,
+body.mypage-body .detail-info-table th {
+    text-align: left !important;
+    color: #888888 !important;
+    font-weight: 500 !important;
+}
+
+body.mypage .detail-info-table td,
+body.mypage-body .detail-info-table td {
+    text-align: right !important;
+    color: #111111 !important;
+    font-weight: 800 !important;
+}
+
+body.mypage .history-item,
+body.mypage-body .history-item {
+    min-height: 150px !important;
+    padding: 30px 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 28px !important;
+}
+
+body.mypage .history-info,
+body.mypage-body .history-info {
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+}
+
+body.mypage .history-info strong,
+body.mypage-body .history-info strong {
+    color: #111111 !important;
+    font-size: clamp(17px, 1vw, 21px) !important;
+    font-weight: 800 !important;
+}
+
+body.mypage .history-info span,
+body.mypage-body .history-info span {
+    color: #111111 !important;
+    font-size: 14px !important;
+}
+
+body.mypage .history-status,
+body.mypage-body .history-status {
+    display: inline-flex !important;
+    margin-left: 8px !important;
+    color: var(--jm-red) !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+}
+
+body.mypage .history-right,
+body.mypage-body .history-right {
+    min-width: 220px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    gap: 36px !important;
+    flex-shrink: 0 !important;
+}
+
+body.mypage .order-code,
+body.mypage-body .order-code {
+    color: #111111 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+}
+
+body.mypage .history-divider,
+body.mypage-body .history-divider {
+    border: 0 !important;
+    border-top: 1px solid #111111 !important;
+    margin: 0 !important;
+}
+
+body.mypage .terms-modal-overlay,
+body.mypage-body .terms-modal-overlay,
+body.mypage .modal-overlay,
+body.mypage-body .modal-overlay,
+body.mypage .cancel-modal-overlay,
+body.mypage-body .cancel-modal-overlay {
+    display: none;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 10000 !important;
+    background: rgba(0, 0, 0, 0.42) !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 24px !important;
+}
+
+body.mypage .modal-content,
+body.mypage-body .modal-content,
+body.mypage .cancel-modal-content,
+body.mypage-body .cancel-modal-content,
+body.mypage .terms-modal-content,
+body.mypage-body .terms-modal-content {
+    background: #ffffff !important;
+    border-radius: 22px !important;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18) !important;
+    position: relative !important;
+}
+
+/* =========================================================
+   10. 반응형
+========================================================= */
+
+@media (max-width: 1440px) and (min-width: 1025px) {
+    :root {
+        --jm-page-gutter: 48px;
+        --jm-mypage-sidebar-width: 300px;
+    }
+}
+
+@media (max-width: 1280px) and (min-width: 1025px) {
+    :root {
+        --jm-page-gutter: 44px;
+        --jm-mypage-sidebar-width: 260px;
+        --jm-layout-gap: 26px;
+    }
+
+    body.mypage .profile-combined-card,
+    body.mypage-body .profile-combined-card {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    body.mypage .alert-side,
+    body.mypage-body .alert-side {
+        max-width: 100% !important;
+        justify-self: stretch !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    :root {
+        --jm-header-height: 70px;
+        --jm-page-gutter: 36px;
+        --jm-layout-gap: 22px;
+    }
+
+    body.mypage .mypage-container,
+    body.mypage-body .mypage-container,
+    body.mypage .container,
+    body.mypage-body .container {
+        padding: 28px 0 56px !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    body.mypage .mypage-sidebar,
+    body.mypage-body .mypage-sidebar,
+    body.mypage .mypage-sidebar-fixed,
+    body.mypage-body .mypage-sidebar-fixed {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex: 0 0 auto !important;
+    }
+
+    body.mypage .mypage-sidebar-fixed,
+    body.mypage-body .mypage-sidebar-fixed {
+        position: static !important;
+        min-height: auto !important;
+        padding: 12px !important;
+        border-radius: 18px !important;
+    }
+
+    body.mypage .mypage-sidebar-fixed ul,
+    body.mypage-body .mypage-sidebar-fixed ul {
+        min-height: auto !important;
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+    }
+
+    body.mypage .mypage-sidebar-fixed li a,
+    body.mypage-body .mypage-sidebar-fixed li a {
+        min-height: 46px !important;
+        border-radius: 12px !important;
+        font-size: 14px !important;
+    }
+
+    body.mypage .profile-combined-card,
+    body.mypage-body .profile-combined-card {
+        grid-template-columns: 1fr !important;
+    }
+
+    body.mypage .alert-side,
+    body.mypage-body .alert-side {
+        max-width: 100% !important;
+        justify-self: stretch !important;
+    }
+
+    body.mypage .bottom-row,
+    body.mypage-body .bottom-row,
+    body.mypage .manage-grid,
+    body.mypage-body .manage-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    body.mypage .history-card,
+    body.mypage-body .history-card {
+        max-height: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --jm-page-gutter: 24px;
+    }
+
+    body.mypage .info-body,
+    body.mypage-body .info-body {
+        grid-template-columns: 1fr !important;
+        gap: 22px !important;
+    }
+
+    body.mypage .profile-section,
+    body.mypage-body .profile-section {
+        min-height: auto !important;
+    }
+
+    body.mypage .edit-info-btn,
+    body.mypage-body .edit-info-btn {
+        margin-top: 22px !important;
+    }
+
+    body.mypage .text-area,
+    body.mypage-body .text-area {
+        padding-top: 0 !important;
+    }
+
+    body.mypage .withdraw-container,
+    body.mypage-body .withdraw-container {
+        margin-top: 26px !important;
+    }
+
+    body.mypage .info-row,
+    body.mypage-body .info-row {
+        grid-template-columns: 86px minmax(0, 1fr) !important;
+        min-height: 48px !important;
+    }
+
+    body.mypage .mypage-sidebar-fixed ul,
+    body.mypage-body .mypage-sidebar-fixed ul {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    body.mypage .sub-item,
+    body.mypage-body .sub-item {
+        align-items: flex-start !important;
+    }
+
+    body.mypage .sub-price,
+    body.mypage-body .sub-price {
+        width: 100% !important;
+        text-align: left !important;
+        margin-left: 0 !important;
+    }
+
+    body.mypage .tab-menu,
+    body.mypage-body .tab-menu {
+        gap: 24px !important;
+        flex-wrap: wrap !important;
+    }
+
+    body.mypage .card-header,
+    body.mypage-body .card-header,
+    body.mypage .history-item,
+    body.mypage-body .history-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+
+    body.mypage .history-right,
+    body.mypage-body .history-right {
+        width: 100% !important;
+        min-width: 0 !important;
+        align-items: flex-start !important;
+        gap: 14px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --jm-page-gutter: 20px;
+    }
+
+    body.mypage .mypage-sidebar-fixed ul,
+    body.mypage-body .mypage-sidebar-fixed ul {
+        grid-template-columns: 1fr !important;
+    }
+
+    body.mypage .profile-combined-card,
+    body.mypage-body .profile-combined-card,
+    body.mypage .dashboard > .bottom-row .mypost-card,
+    body.mypage-body .dashboard > .bottom-row .mypost-card,
+    body.mypage .dashboard > .bottom-row .goal-card,
+    body.mypage-body .dashboard > .bottom-row .goal-card,
+    body.mypage .dashboard > .bottom-row .card,
+    body.mypage-body .dashboard > .bottom-row .card {
+        border-radius: 18px !important;
+        padding: 18px !important;
+    }
+
+    body.mypage .info-row,
+    body.mypage-body .info-row {
+        grid-template-columns: 1fr !important;
+        gap: 4px !important;
+        padding: 10px 0 !important;
+    }
+
+    body.mypage .sub-item,
+    body.mypage-body .sub-item {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+}
+
+
+/* =========================================================
+   MYPAGE RESTORE ONLY REQUESTED PATCH v54
+   - 기존 MyPage 비율/카드/사이드바 디자인은 건드리지 않음
+   - 공통 header.css 디자인 재사용
+   - 계좌 정보 모달 복구
+   - 소비 목표 빈 문구 중앙 정렬
+   - editprofile 프로필 fallback / 눈 아이콘 보정 유지
+========================================================= */
+
+/* 1) Header / Sider / Footer: OTT처럼 공통 header.css 디자인을 그대로 사용 */
+body.mypage,
+body.mypage-body {
+    padding-top: var(--jm-header-height) !important;
+}
+
+body.mypage .site-header,
+body.mypage-body .site-header,
+body.mypage > header,
+body.mypage-body > header,
+body.mypage > .header,
+body.mypage-body > .header,
+body.mypage > .main-header,
+body.mypage-body > .main-header,
+body.mypage > .global-header,
+body.mypage-body > .global-header,
+body.mypage > .common-header,
+body.mypage-body > .common-header,
+body.mypage > .app-header,
+body.mypage-body > .app-header,
+body.mypage > #header,
+body.mypage-body > #header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9000 !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+    animation: none !important;
+}
+
+body.mypage .site-header .hamburger-btn,
+body.mypage-body .site-header .hamburger-btn,
+body.mypage .hamburger-btn,
+body.mypage-body .hamburger-btn {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+
+body.mypage .site-header .hamburger-btn:focus,
+body.mypage-body .site-header .hamburger-btn:focus,
+body.mypage .site-header .hamburger-btn:focus-visible,
+body.mypage-body .site-header .hamburger-btn:focus-visible,
+body.mypage .site-header .hamburger-btn:active,
+body.mypage-body .site-header .hamburger-btn:active {
+    border: 0 !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+
+body.mypage .sidebar,
+body.mypage-body .sidebar,
+body.mypage .side-bar,
+body.mypage-body .side-bar,
+body.mypage .side-menu,
+body.mypage-body .side-menu,
+body.mypage .menu-drawer,
+body.mypage-body .menu-drawer,
+body.mypage .nav-drawer,
+body.mypage-body .nav-drawer {
+    z-index: 9200 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+body.mypage .sidebar.open,
+body.mypage-body .sidebar.open,
+body.mypage .sidebar.is-open,
+body.mypage-body .sidebar.is-open,
+body.mypage .sidebar.active,
+body.mypage-body .sidebar.active,
+body.mypage .sidebar.show,
+body.mypage-body .sidebar.show,
+body.mypage.sidebar-open .sidebar,
+body.mypage-body.sidebar-open .sidebar,
+body.mypage.is-sidebar-open .sidebar,
+body.mypage-body.is-sidebar-open .sidebar {
+    left: 0 !important;
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+body.mypage .footer,
+body.mypage-body .footer,
+body.mypage .site-footer,
+body.mypage-body .site-footer,
+body.mypage .common-footer,
+body.mypage-body .common-footer {
+    width: 100% !important;
+    max-width: none !important;
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
+}
+
+/* 2) 계좌 정보 수정/등록 모달 복구 */
+body.mypage #accountModalOverlay.account-modal-overlay,
+body.mypage-body #accountModalOverlay.account-modal-overlay,
+body.mypage .account-modal-overlay,
+body.mypage-body .account-modal-overlay {
+    display: none;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 12000 !important;
+    background: rgba(0, 0, 0, 0.45) !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 96px 24px 32px !important;
+    overflow-y: auto !important;
+}
+
+body.mypage #accountModalOverlay .account-modal-content,
+body.mypage-body #accountModalOverlay .account-modal-content,
+body.mypage .account-modal-content,
+body.mypage-body .account-modal-content {
+    width: min(430px, calc(100vw - 48px)) !important;
+    max-width: 430px !important;
+    min-width: 0 !important;
+    max-height: calc(100vh - 128px) !important;
+    overflow-y: auto !important;
+    margin: auto !important;
+    padding: 34px 32px 30px !important;
+    background: #ffffff !important;
+    border: 1px solid #eef0f4 !important;
+    border-radius: 22px !important;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18) !important;
+    position: relative !important;
+    text-align: left !important;
+    box-sizing: border-box !important;
+}
+
+body.mypage #accountModalOverlay .close-btn,
+body.mypage-body #accountModalOverlay .close-btn,
+body.mypage .account-modal-content .close-btn,
+body.mypage-body .account-modal-content .close-btn {
+    position: absolute !important;
+    top: 18px !important;
+    right: 22px !important;
+    color: #555555 !important;
+    font-size: 26px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    z-index: 1 !important;
+}
+
+body.mypage #accountModalTitle,
+body.mypage-body #accountModalTitle,
+body.mypage .account-modal-content h2,
+body.mypage-body .account-modal-content h2 {
+    margin: 0 34px 24px 0 !important;
+    color: #111111 !important;
+    font-size: 24px !important;
+    font-weight: 900 !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.04em !important;
+}
+
+body.mypage #accountForm,
+body.mypage-body #accountForm {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 18px !important;
+    margin: 0 !important;
+}
+
+body.mypage #accountForm .form-group,
+body.mypage-body #accountForm .form-group,
+body.mypage .account-modal-content .form-group,
+body.mypage-body .account-modal-content .form-group {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin: 0 !important;
+}
+
+body.mypage #accountForm label,
+body.mypage-body #accountForm label,
+body.mypage .account-modal-content label,
+body.mypage-body .account-modal-content label {
+    color: #111111 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+}
+
+body.mypage #accountForm select,
+body.mypage-body #accountForm select,
+body.mypage #accountForm input[type="text"],
+body.mypage-body #accountForm input[type="text"],
+body.mypage .account-modal-content select,
+body.mypage-body .account-modal-content select,
+body.mypage .account-modal-content input[type="text"],
+body.mypage-body .account-modal-content input[type="text"] {
+    width: 100% !important;
+    height: 46px !important;
+    padding: 0 14px !important;
+    border: 1px solid #d8dce5 !important;
+    border-radius: 12px !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    outline: none !important;
+    box-sizing: border-box !important;
+}
+
+body.mypage #accountForm select:focus,
+body.mypage-body #accountForm select:focus,
+body.mypage #accountForm input[type="text"]:focus,
+body.mypage-body #accountForm input[type="text"]:focus,
+body.mypage .account-modal-content select:focus,
+body.mypage-body .account-modal-content select:focus,
+body.mypage .account-modal-content input[type="text"]:focus,
+body.mypage-body .account-modal-content input[type="text"]:focus {
+    border-color: #1e2d4d !important;
+    box-shadow: 0 0 0 3px rgba(30, 45, 77, 0.12) !important;
+}
+
+body.mypage #currentAccountInfo.current-account-card,
+body.mypage-body #currentAccountInfo.current-account-card,
+body.mypage .current-account-card,
+body.mypage-body .current-account-card {
+    width: 100% !important;
+    padding: 14px 16px !important;
+    border: 1px solid #e2e4ea !important;
+    border-radius: 14px !important;
+    background: #f8fafc !important;
+    color: #111111 !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+}
+
+body.mypage #currentAccountInfo.current-account-card strong,
+body.mypage-body #currentAccountInfo.current-account-card strong,
+body.mypage .current-account-card strong,
+body.mypage-body .current-account-card strong {
+    display: block !important;
+    margin-bottom: 4px !important;
+    color: #1e2d4d !important;
+    font-size: 14px !important;
+    font-weight: 900 !important;
+}
+
+body.mypage #accountHelp.form-help,
+body.mypage-body #accountHelp.form-help,
+body.mypage .form-help,
+body.mypage-body .form-help {
+    min-height: 18px !important;
+    color: #3b82f6 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+}
+
+body.mypage #accountError.error-text,
+body.mypage-body #accountError.error-text,
+body.mypage .error-text,
+body.mypage-body .error-text {
+    min-height: 18px !important;
+    color: #ff4d4d !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    line-height: 1.4 !important;
+}
+
+body.mypage #accountSubmitBtn.change-account-btn,
+body.mypage-body #accountSubmitBtn.change-account-btn,
+body.mypage .account-modal-content #accountSubmitBtn,
+body.mypage-body .account-modal-content #accountSubmitBtn {
+    width: 100% !important;
+    height: 48px !important;
+    margin-top: 2px !important;
+    border: none !important;
+    border-radius: 12px !important;
+    background: #1e2d4d !important;
+    color: #ffffff !important;
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    cursor: pointer !important;
+}
+
+/* 3) 내 개인 소비 목표 빈 안내 문구 중앙 정렬 */
+body.mypage .goal-card,
+body.mypage-body .goal-card {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+body.mypage .goal-card .empty-card-message,
+body.mypage-body .goal-card .empty-card-message {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 0 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    color: #333333 !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+}
+
+/* 4) editprofile: SVG 눈 아이콘/프로필 fallback 보정만 유지 */
+body.mypage .profile-circle,
+body.mypage-body .profile-circle {
+    background: #243864 !important;
+}
+
+body.mypage .profile-preview-img.is-hidden,
+body.mypage-body .profile-preview-img.is-hidden,
+body.mypage .profile-preview-img[hidden],
+body.mypage-body .profile-preview-img[hidden],
+body.mypage .profile-avatar-fallback[hidden],
+body.mypage-body .profile-avatar-fallback[hidden] {
+    display: none !important;
+}
+
+body.mypage .profile-avatar-fallback,
+body.mypage-body .profile-avatar-fallback {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important;
+}
+
+body.mypage .profile-avatar-fallback svg,
+body.mypage-body .profile-avatar-fallback svg {
+    width: 72px !important;
+    height: 72px !important;
+    stroke: currentColor !important;
+}
+
+body.mypage .toggle-eye,
+body.mypage-body .toggle-eye {
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+@media (max-width: 768px) {
+    body.mypage,
+    body.mypage-body {
+        padding-top: 70px !important;
+    }
+
+    body.mypage #accountModalOverlay.account-modal-overlay,
+    body.mypage-body #accountModalOverlay.account-modal-overlay,
+    body.mypage .account-modal-overlay,
+    body.mypage-body .account-modal-overlay {
+        padding: 84px 14px 22px !important;
+    }
+}
+
+/* =========================================================
+   MYPAGE SUBSCRIPTION ICON ONLY PATCH v55
+   - 내 구독 카드의 서비스명을 텍스트만 보여주지 않고 아이콘 영역과 함께 표시
+   - 기존 MyPage 레이아웃/카드/헤더 디자인은 건드리지 않음
+========================================================= */
+
+body.mypage .dashboard .subscription-list .dashboard-sub-item,
+body.mypage-body .dashboard .subscription-list .dashboard-sub-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: clamp(18px, 1.6vw, 30px) !important;
+}
+
+body.mypage .dashboard .subscription-list .dashboard-sub-logo,
+body.mypage-body .dashboard .subscription-list .dashboard-sub-logo {
+    width: clamp(58px, 4.2vw, 76px) !important;
+    height: clamp(58px, 4.2vw, 76px) !important;
+    flex: 0 0 clamp(58px, 4.2vw, 76px) !important;
+
+    border-radius: 16px !important;
+    background: #ffffff !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    overflow: hidden !important;
+}
+
+body.mypage .dashboard .subscription-list .dashboard-sub-logo img,
+body.mypage-body .dashboard .subscription-list .dashboard-sub-logo img {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+}
+
+body.mypage .dashboard .subscription-list .dashboard-sub-logo.logo-fallback,
+body.mypage-body .dashboard .subscription-list .dashboard-sub-logo.logo-fallback,
+body.mypage .dashboard .subscription-list .dashboard-sub-logo:empty,
+body.mypage-body .dashboard .subscription-list .dashboard-sub-logo:empty {
+    background: var(--jm-navy) !important;
+}
+
+body.mypage .dashboard .subscription-list .dashboard-sub-logo.logo-fallback::before,
+body.mypage-body .dashboard .subscription-list .dashboard-sub-logo.logo-fallback::before,
+body.mypage .dashboard .subscription-list .dashboard-sub-logo:empty::before,
+body.mypage-body .dashboard .subscription-list .dashboard-sub-logo:empty::before {
+    content: attr(data-initial);
+    width: 100% !important;
+    height: 100% !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    color: #ffffff !important;
+    font-size: 24px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+}
+
+body.mypage .dashboard .subscription-list .dashboard-sub-logo span,
+body.mypage-body .dashboard .subscription-list .dashboard-sub-logo span {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 16px !important;
+    background: var(--jm-navy) !important;
+    color: #ffffff !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    font-size: 24px !important;
+    font-weight: 900 !important;
+}
+
+@media (max-width: 768px) {
+    body.mypage .dashboard .subscription-list .dashboard-sub-item,
+    body.mypage-body .dashboard .subscription-list .dashboard-sub-item {
+        align-items: flex-start !important;
+    }
+}
+
+/* =========================================================
+   MYPAGE GOAL CARD PATCH v56
+   - 내 개인 소비 목표 게이지를 대시보드 목표 디자인과 통일
+   - 실제 저축 합계 기준 진행률 표시
+========================================================= */
+
+body.mypage .goal-card,
+body.mypage-body .goal-card {
+    overflow: hidden !important;
+}
+
+body.mypage .mypage-goal-list,
+body.mypage-body .mypage-goal-list {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 22px !important;
+}
+
+body.mypage .mypage-goal-item,
+body.mypage-body .mypage-goal-item {
+    width: 100% !important;
+    padding: 0 0 22px !important;
+    border-bottom: 1px solid #eef0f4 !important;
+}
+
+body.mypage .mypage-goal-item:last-child,
+body.mypage-body .mypage-goal-item:last-child {
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+}
+
+body.mypage .main-goal,
+body.mypage-body .main-goal {
+    margin: 0 !important;
+}
+
+body.mypage .goal-label-row,
+body.mypage-body .goal-label-row {
+    width: 100% !important;
+    margin-bottom: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 14px !important;
+}
+
+body.mypage .goal-type-badge,
+body.mypage-body .goal-type-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 28px !important;
+    padding: 0 12px !important;
+    border-radius: 999px !important;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+}
+
+body.mypage .goal-type-badge.fixed,
+body.mypage-body .goal-type-badge.fixed {
+    background: #eaf1f8 !important;
+    color: #1e2d4d !important;
+}
+
+body.mypage .goal-type-badge.normal,
+body.mypage-body .goal-type-badge.normal {
+    background: #f4f7fb !important;
+    color: #3F72AF !important;
+}
+
+body.mypage .goal-percent,
+body.mypage-body .goal-percent {
+    color: #1e2d4d !important;
+    font-size: 14px !important;
+    font-weight: 900 !important;
+    white-space: nowrap !important;
+}
+
+body.mypage .main-goal-title,
+body.mypage-body .main-goal-title {
+    margin: 0 0 8px !important;
+    color: #555555 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+}
+
+body.mypage .goal-name,
+body.mypage-body .goal-name {
+    margin: 0 !important;
+    color: #111111 !important;
+    font-size: clamp(16px, 1vw, 19px) !important;
+    font-weight: 900 !important;
+    line-height: 1.35 !important;
+    word-break: break-word !important;
+}
+
+body.mypage .goal-money-row,
+body.mypage-body .goal-money-row {
+    width: 100% !important;
+    margin-top: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 4px !important;
+    color: #333333 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    line-height: 1.3 !important;
+}
+
+body.mypage .goal-money-row span:first-child,
+body.mypage-body .goal-money-row span:first-child {
+    color: #1e2d4d !important;
+    font-weight: 900 !important;
+}
+
+body.mypage .goal-card .progress-bg,
+body.mypage-body .goal-card .progress-bg {
+    width: 100% !important;
+    height: 18px !important;
+    margin-top: 12px !important;
+    border-radius: 999px !important;
+    background: #eef3f8 !important;
+    overflow: hidden !important;
+}
+
+body.mypage .goal-card .progress-fill,
+body.mypage-body .goal-card .progress-fill {
+    height: 100% !important;
+    min-width: 0 !important;
+    border-radius: 999px !important;
+    background: linear-gradient(90deg, #1e2d4d 0%, #3F72AF 100%) !important;
+    transition: width 0.35s ease !important;
+}
+
+body.mypage .goal-card .empty-card-message,
+body.mypage-body .goal-card .empty-card-message {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    min-height: 260px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    color: #333333 !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+}
+
+@media (max-width: 768px) {
+    body.mypage .mypage-goal-list,
+    body.mypage-body .mypage-goal-list {
+        gap: 18px !important;
+    }
+
+    body.mypage .goal-money-row,
+    body.mypage-body .goal-money-row {
+        flex-wrap: wrap !important;
+    }
+}
+
+/* =========================================================
+   MYPAGE GLOBAL SIDEBAR DESIGN PATCH v57
+   - 메인페이지 햄버거 사이드바와 동일하게 보이도록 보정
+   - 공통 사이드바가 열렸을 때 마이페이지 전용 사이드바가 뒤에 비치는 문제 해결
+========================================================= */
+
+/* 공통 사이드바는 메인페이지 header.css 기준으로 고정 */
+body.mypage nav.sidebar,
+body.mypage-body nav.sidebar {
+    position: fixed !important;
+    top: 74px !important;
+    left: -280px !important;
+    width: 280px !important;
+    height: calc(100vh - 74px) !important;
+    background: #193b60 !important;
+    z-index: 9200 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transition: left 0.3s ease !important;
+    transform: none !important;
+}
+
+/* 공통 사이드바 open 상태 */
+body.mypage nav.sidebar.open,
+body.mypage-body nav.sidebar.open,
+body.mypage nav.sidebar.is-open,
+body.mypage-body nav.sidebar.is-open,
+body.mypage nav.sidebar.active,
+body.mypage-body nav.sidebar.active,
+body.mypage.sidebar-open nav.sidebar,
+body.mypage-body.sidebar-open nav.sidebar,
+body.mypage.is-sidebar-open nav.sidebar,
+body.mypage-body.is-sidebar-open nav.sidebar {
+    left: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: none !important;
+}
+
+/* 공통 사이드바가 열렸을 때 마이페이지 전용 사이드바 숨김 */
+body.mypage:has(nav.sidebar.open) .mypage-sidebar,
+body.mypage-body:has(nav.sidebar.open) .mypage-sidebar,
+body.mypage.sidebar-open .mypage-sidebar,
+body.mypage-body.sidebar-open .mypage-sidebar,
+body.mypage.is-sidebar-open .mypage-sidebar,
+body.mypage-body.is-sidebar-open .mypage-sidebar {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* 공통 사이드바 내부 메뉴도 메인 기준으로 재보정 */
+body.mypage nav.sidebar ul,
+body.mypage-body nav.sidebar ul {
+    list-style: none !important;
+    padding: 20px !important;
+    margin: 0 !important;
+}
+
+body.mypage nav.sidebar ul li a,
+body.mypage-body nav.sidebar ul li a {
+    display: block !important;
+    color: #f9f7f7 !important;
+    text-decoration: none !important;
+    padding: 14px 16px !important;
+    border-radius: 8px !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    text-align: left !important;
+    background: transparent !important;
+}
+
+body.mypage nav.sidebar ul li a:hover,
+body.mypage-body nav.sidebar ul li a:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 로그아웃 영역도 메인 기준 유지 */
+body.mypage nav.sidebar .sidebar-logout,
+body.mypage-body nav.sidebar .sidebar-logout {
+    margin-top: auto !important;
+    padding: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+body.mypage nav.sidebar .sidebar-logout a,
+body.mypage-body nav.sidebar .sidebar-logout a {
+    color: #f9f7f7 !important;
+    text-decoration: none !important;
+    font-size: 14px !important;
+    opacity: 0.7 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+body.mypage nav.sidebar .sidebar-logout a:hover,
+body.mypage-body nav.sidebar .sidebar-logout a:hover {
+    opacity: 1 !important;
+}

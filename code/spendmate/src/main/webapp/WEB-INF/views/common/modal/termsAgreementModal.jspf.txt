@@ -1,0 +1,51 @@
+<%@ page pageEncoding="UTF-8" %>
+
+<div class="auth-modal-overlay" id="termsOverlay" aria-hidden="true">
+    <div class="auth-modal__backdrop" data-auth-close></div>
+
+    <section
+            class="terms-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="termsModalTitle"
+            tabindex="-1"
+    >
+        <button type="button" class="auth-modal__close" data-auth-close aria-label="모달 닫기">×</button>
+
+        <div class="terms-modal__header">
+            <p class="terms-modal__eyebrow">회원가입 전 확인</p>
+            <h2 class="terms-modal__title" id="termsModalTitle">이용약관 동의</h2>
+            <p class="terms-modal__desc">
+                지출메이트 서비스 이용을 위해 필수 약관을 확인하고 동의해 주세요.
+            </p>
+        </div>
+
+        <div class="terms-modal__body">
+            <label class="terms-all-check">
+                <input type="checkbox" id="termsAllCheck">
+                <span class="terms-check-ui" aria-hidden="true"></span>
+                <span class="terms-all-text">전체 동의</span>
+            </label>
+
+            <div class="terms-list" id="termsList">
+                <div class="terms-loading">이용약관을 불러오는 중입니다.</div>
+            </div>
+        </div>
+
+        <div class="terms-modal__footer">
+            <p class="terms-required-message" id="termsRequiredMessage">
+                필수 약관에 모두 동의해야 회원가입을 진행할 수 있습니다.
+            </p>
+
+            <div class="terms-actions">
+                <button type="button" class="terms-cancel-button" data-auth-open="login">
+                    이전
+                </button>
+
+                <button type="button" class="terms-confirm-button" id="termsConfirmButton" disabled>
+                    확인하기
+                </button>
+            </div>
+        </div>
+    </section>
+</div>

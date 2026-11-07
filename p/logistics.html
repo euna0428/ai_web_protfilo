@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>물류 DB · 이은아</title>
+<meta name="description" content="물류센터 아르바이트생의 근무와 급여를 조회·집계하는 데이터베이스입니다.">
+<meta property="og:title" content="물류 DB · 이은아">
+<meta property="og:description" content="물류센터 아르바이트생의 근무와 급여를 조회·집계하는 데이터베이스입니다.">
+<meta property="og:image" content="../images/og.jpg">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="../images/favicon.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="../css/site4.css">
+<link rel="stylesheet" href="../vendor/atom-one-dark.min.css">
+</head>
+<body class="detail">
+<header class="gtop" id="gtop">
+  <div class="gh-in">
+    <a class="brand" href="../index.html"><img src="../images/char_sq.png" alt="">이은아</a>
+    <nav class="gnav" aria-label="섹션 이동"><a href="../index.html#profile">소개</a><a href="../index.html#can">할 수 있는 일</a><a href="../index.html#skills">기술</a><a href="../index.html#projects">프로젝트</a><a href="../index.html#learning">학습 기록</a></nav>
+    <div class="gact"><a class="ghlink" href="https://github.com/euna0428" target="_blank" rel="noopener" data-cur="ext"><img class="ghi" src="../vendor/icons/github.svg" alt="" width="20" height="20">GitHub</a></div>
+  </div>
+</header>
+<main class="dp">
+<section class="dh"><div class="wrap">
+  <a class="back" href="../index.html#projects">프로젝트 목록</a>
+  <div class="dtitle"><h1>물류센터 근무·급여 관리 DB</h1><p class="dmeta">수업 과제 · 개인<span>2026.03 ~ 2026.06</span></p></div>
+  
+  <p class="htag"><span style="--c:#00758f"><img src="../vendor/icons/mysql.svg" alt="" width="16" height="16">#MySQL</span><span style="--c:#00758f"><img src="../vendor/icons/mysql.svg" alt="" width="16" height="16">#MySQL Workbench</span><span style="--c:#00758f">#SQL</span><span style="--c:#5b6bd6">#ERDCloud</span><span style="--c:#d6336c">#Mermaid</span></p>
+  <div class="acts"><a class="pill line" href="https://github.com/euna0428/CouPang-DB-Project" target="_blank" rel="noopener">GitHub 저장소</a></div>
+</div></section>
+<div class="dtabs"><div class="wrap"><a href="#ov">개요</a><a href="#bg">배경과 문제</a><a href="#role">역할과 기여</a><a href="#dec">기술적 의사결정</a><a href="#res">성과와 배운 점</a></div></div>
+<div class="wrap">
+<section class="ds" id="ov"><h2>개요</h2>
+  <ul class="sum big rv"><li>물류센터 아르바이트생의 근무와 급여를 조회·집계하는 데이터베이스입니다.</li><li>알바생·물류센터·업무·근무 4개 테이블과 외래키 3개를 설계했습니다.</li><li>최대 4개 테이블 JOIN, GROUP BY, HAVING, 서브쿼리가 들어간 SQL 25문제를 직접 실행해 결과를 확인했습니다.</li></ul>
+  <dl class="meta rv"><div><dt>기간</dt><dd>2026.03 ~ 2026.06</dd></div><div><dt>구분</dt><dd>교내활동</dd></div><div><dt>인원</dt><dd>개인 프로젝트</dd></div><div><dt>역할</dt><dd>DB 설계 · SQL 작성</dd></div></dl>
+  
+  <div class="fulls"><figure class="full rv"><div class="scrollshot"><img src="../images/db_erd.jpg" alt="ERD" loading="lazy" data-zoom></div><figcaption>ERD</figcaption></figure></div>
+</section>
+<section class="ds" id="bg"><h2>배경과 문제</h2>
+  <div class="prose rv"><p>데이터베이스 수업 기말 과제로, 물류센터 아르바이트생의 근무와 급여를 조회·집계하는 DB를 설계했습니다.</p><p>보고서에 넣을 ERD에 모든 컬럼이 들어가야 했는데, 코드로 그리는 도구에서 자료형 괄호 때문에 오류가 났습니다.</p></div>
+</section>
+<section class="ds" id="role"><h2>역할과 기여</h2>
+  <p class="role rv">DB 설계 · SQL 작성</p>
+  <div class="rv"><div class="mo"><div><h4>내가 만든 부분</h4><ul><li>요구사항 분석, 개념·논리·물리 설계</li><li>테이블 4개·외래키 3개</li><li>샘플 데이터와 SQL 25문제</li></ul></div></div></div>
+  
+</section>
+<section class="ds" id="dec"><h2>기술적 의사결정</h2>
+  <article class="case rv">
+  <h3>내 테이블이 전부 보이는 ERD</h3><p class="when">ChatGPT 대화 「데이터베이스 요구사항 분석」 2026.06.17</p>
+  <dl class="cdl">
+    <dt>상황</dt><dd><p>SQL을 다 짠 뒤 보고서에 넣을 개념적 ERD가 필요했습니다. 직접 그리지 않고 코드를 넣으면 그려 주는 도구를 찾았습니다.</p></dd>
+    <dt>AI에 준 조건</dt><dd><ul><li>&quot;내가 그리는 게 아니라 코드를 첨부하면 그걸 토대로 만들어주는 사이트를 추천해 달라는 거야&quot;로 요구를 다시 좁힘</li><li>Mermaid에서 난 오류(Parse error … CHAR(5))를 그대로 붙여 질문</li><li>AI가 개체와 관계만 그린 간단한 버전을 주자 &quot;내 컬럼까지 다 나와야 해&quot;라고 요구</li></ul></dd>
+    <dt>AI의 답과 이어진 작업</dt><dd><p>AI는 Mermaid가 CHAR(5)의 괄호를 도형 문법으로 읽어서 난 오류라며 라벨을 큰따옴표로 감싸게 고쳤고, 4개 테이블의 모든 컬럼과 PK·NOT NULL이 들어간 버전을 다시 만들었습니다.</p></dd>
+    <dt>직접 확인한 것</dt><dd><ul><li>ERD의 컬럼과 자료형을 실제 CREATE TABLE 문과 대조</li></ul></dd>
+    <dt>결과</dt><dd><p>보고서에 넣은 ERD에 4개 테이블의 컬럼이 모두 들어갔습니다.</p></dd>
+  </dl>
+  
+</article>
+  <h3 class="h3">화면·기능별 코드</h3>
+  <article class="feat rv" id="f-sql"><header><h3>테이블 설계와 SQL 25문제</h3><span class="fc">파일 1개 · 153줄</span></header><p>알바생·물류센터·업무·근무 4개 테이블과 외래키 3개를 만들고, 샘플 데이터를 넣은 뒤 JOIN·GROUP BY·HAVING·서브쿼리 문제 25개를 작성해 실행했습니다.</p><div class="files"><details class="file" data-src="../code/logistics/DataBase-Project-CouPang.sql.txt" data-lang="sql"><summary><span class="fn">DataBase-Project-CouPang.sql</span><span class="fp"></span><span class="fl">153줄</span><a class="gh" href="https://github.com/euna0428/CouPang-DB-Project/blob/main/DataBase-Project-CouPang.sql" target="_blank" rel="noopener">GitHub ↗</a></summary><div class="fbody"><div class="loading">코드를 불러오는 중…</div></div></details></div></article>
+</section>
+<section class="ds" id="res"><h2>성과와 배운 점</h2>
+  <ul class="nums rv"><li><b><span class="cnt" data-to="4">4</span></b><span>테이블</span></li><li><b><span class="cnt" data-to="3">3</span></b><span>외래키</span></li><li><b><span class="cnt" data-to="25">25</span></b><span>SQL 문제</span></li></ul>
+  <div class="sqlr rv"><div class="cb"><div class="cbh"><b>문제 21 · 4개 테이블 JOIN</b><a href="https://github.com/euna0428/CouPang-DB-Project/blob/main/DataBase-Project-CouPang.sql" target="_blank" rel="noopener">GitHub ↗</a></div><pre><code class="language-sql">SELECT a.이름, c.센터명, j.업무명
+FROM 근무 g
+JOIN 알바생 a   ON g.알바생ID = a.알바생ID
+JOIN 물류센터 c ON g.센터ID   = c.센터ID
+JOIN 업무 j     ON g.업무ID   = j.업무ID;</code></pre></div><div class="res"><b>실행 결과</b><table class="data"><tr><th>이름</th><th>센터명</th><th>업무명</th></tr><tr><td>이은아</td><td>천안 쿠팡 센터</td><td>알바생</td></tr><tr><td>이응아</td><td>대전 쿠팡 센터</td><td>알바생</td></tr><tr><td>이은이</td><td>수원 쿠팡 센터</td><td>알바생</td></tr><tr><td>이은아</td><td>천안 쿠팡 센터</td><td>알바생</td></tr><tr><td>이응아</td><td>인천 쿠팡 센터</td><td>알바생</td></tr><tr><td>이은이</td><td>울산 쿠팡 센터</td><td>알바생</td></tr></table></div></div><div class="sqlr rv"><div class="cb"><div class="cbh"><b>문제 23 · GROUP BY + HAVING</b><a href="https://github.com/euna0428/CouPang-DB-Project/blob/main/DataBase-Project-CouPang.sql" target="_blank" rel="noopener">GitHub ↗</a></div><pre><code class="language-sql">SELECT 알바생ID, SUM(급여)
+FROM 근무
+GROUP BY 알바생ID
+HAVING SUM(급여) &gt;= 700000;</code></pre></div><div class="res"><b>실행 결과</b><table class="data"><tr><th>알바생ID</th><th>SUM(급여)</th></tr><tr><td>20232657</td><td>800000</td></tr><tr><td>20232658</td><td>1400000</td></tr></table></div></div>
+  <div class="prose rv"><p>테이블마다 기본키와 외래키를 직접 정하는 과정이 이 과제에서 가장 헷갈렸고, 수업 소감에도 외래키 활용을 이 과제로 확실히 이해했다고 적었습니다.</p><p>이름 하나로는 행이 구분되지 않는다는 걸 이 과제에서 배웠습니다. RoadSafe에서 중복을 지울 때도 위치명 하나가 아니라 사고지역관리번호·사고유형·위치명·위도·경도 5개 컬럼을 묶어 기준으로 삼았습니다.</p></div>
+  <nav class="pn"><a href="clover.html"><small>이전</small>Clo-ver</a><a class="nx" href="plant.html"><small>다음</small>식물 AI</a></nav>
+</section>
+</div>
+</main>
+<footer class="gf"><div class="wrap"><b>이은아</b><a href="mailto:ddd041128@gmail.com">ddd041128@gmail.com</a><a href="https://github.com/euna0428" target="_blank" rel="noopener">GitHub</a><span>© 2026</span></div></footer>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="이미지 크게 보기"><figure><img id="lb-img" alt=""><figcaption id="lb-cap"></figcaption></figure></div>
+<script src="../vendor/highlight.min.js"></script><script src="../vendor/kotlin.min.js"></script>
+<script src="../js/site4.js"></script>
+</body></html>

@@ -1,0 +1,39 @@
+<%@ page pageEncoding="UTF-8" %>
+
+<div class="auth-modal-overlay" id="loginRequiredOverlay" aria-hidden="true">
+  <div class="auth-modal__backdrop" data-auth-close></div>
+
+  <section
+          class="auth-modal__dialog auth-modal__dialog--login-required"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="loginRequiredTitle"
+          tabindex="-1"
+  >
+    <button type="button" class="auth-modal__close" data-auth-close aria-label="모달 닫기">×</button>
+
+    <div class="auth-modal__wave-bg" aria-hidden="true"></div>
+
+    <div class="auth-wrap auth-wrap--center">
+      <div class="auth-left">
+        <div class="brand">
+          <div class="title" id="loginRequiredTitle">로그인이 필요한 작업입니다</div>
+        </div>
+
+        <p class="helper">
+          계속 이용하려면 로그인 후 다시 진행해 주세요.
+        </p>
+
+        <div class="social-row">
+          <button type="button" class="social-btn" data-auth-close>
+            취소
+          </button>
+
+          <button type="button" class="primary-btn" data-auth-open="login">
+            확인
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

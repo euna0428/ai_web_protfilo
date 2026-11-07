@@ -1,0 +1,179 @@
+import os
+import json
+import pandas as pd
+import numpy as np
+from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier, VotingRegressor
+from sklearn.metrics import mean_squared_error, r2_score, classification_report
+from sklearn.preprocessing import LabelEncoder
+import lightgbm as lgb
+import smote_variants as sv
+from joblib import parallel_backend, dump
+
+# ── 설정 ───────────────────────────────────────────────────────────
+training_dir   = r"C:\AI data\Training"
+validation_dir = r"C:\AI data\Validation"
+error_log      = "error_log.txt"
+N_JOBS         = -1
+RANDOM_STATE   = 42
+
+def init_error_log(path):
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write("오류 로그 시작\n\n")
+
+# JSON 특성 추출 함수
+def extract_features(fp, log_file):
+    try:
+        with open(fp, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        sensor   = data.get('sensor', {})
+        watering = data.get('watering', {})
+        plant    = data.get('plant', {})
+
+        # 기본 특성
+        temp = float(sensor.get('AirTemperature', 0))
+        humi = float(sensor.get('AirHumidity', 0))
+        amt  = float(watering.get('AmtIrrigation', 0))
+        ts   = watering.get('WateringTime', '200001010000')
+        try:
+            dt = datetime.strptime(ts[:8], '%Y%m%d')
+            days = (datetime.now() - dt).days
+        except:
+            days = 0
+
+        # 회귀 타깃
+        soil = sensor.get('LowSoilHumi', None)
+        if soil is None:
+            return None
+        soil = float(soil)
+
+        name = plant.get('PlantName', 'unknown_plant').strip() or 'unknown_plant'
+        env  = plant.get('Environment', 'unknown').strip() or 'unknown'
+
+        return {
+            'AirTemp':           temp,
+            'Humidity':          humi,
+            'AmtIrrigation':     amt,
+            'DaysSinceWatering': days,
+            'LowSoilHumi':       soil,
+            'PlantName':         name,
+            'WateringTime':      dt,
+            'Environment':       env
+        }
+    except Exception as e:
+        with open(log_file, 'a', encoding='utf-8') as log:
+            log.write(f"[ERROR] {fp}: {e}\n")
+        return None
+
+# 배치 JSON 로드
+def collect_json_data(directory, log_file, batch_size=1000, max_workers=4):
+    files = []
+    for r, _, fs in os.walk(directory):
+        for fn in fs:
+            if fn.lower().endswith('.json'):
+                files.append(os.path.join(r, fn))
+    print(f"📂 {directory}: {len(files)} files")
+    data = []
+    batches = len(files)//batch_size + bool(len(files)%batch_size)
+    for i in range(batches):
+        batch = files[i*batch_size:(i+1)*batch_size]
+        print(f"🚀 Batch {i+1}/{batches}: {len(batch)} files")
+        with ThreadPoolExecutor(max_workers=max_workers) as ex:
+            for feat in ex.map(lambda f: extract_features(f, log_file), batch):
+                if feat:
+                    data.append(feat)
+    return pd.DataFrame(data)
+
+# 초기화
+init_error_log(error_log)
+# 데이터 로드
+train_df = collect_json_data(training_dir,   error_log)
+val_df   = collect_json_data(validation_dir, error_log)
+df = pd.concat([train_df, val_df], ignore_index=True)
+print(f"총 샘플: {len(df)}")
+
+# 피처 엔지니어링
+# 시계열 파생
+df['Month']     = df['WateringTime'].dt.month
+df['DayOfYear'] = df['WateringTime'].dt.dayofyear
+# 이동 평균
+df = df.sort_values(['PlantName','WateringTime'])
+for col in ['AirTemp','Humidity']:
+    df[f'{col}_MA3'] = (
+        df.groupby('PlantName')[col]
+          .rolling(3, min_periods=1)
+          .mean()
+          .reset_index(level=0, drop=True)
+    )
+# One-Hot 인코딩
+df = pd.get_dummies(df, columns=['PlantName'], prefix='Plant')
+# 라벨 인코딩
+le = LabelEncoder()
+df['EnvLabel'] = le.fit_transform(df['Environment'])
+
+# 공통 피처/타깃 분리
+y_reg = df['LowSoilHumi']
+X     = df.drop(columns=['LowSoilHumi','WateringTime','Environment','EnvLabel'])
+
+# train/test 분리
+X_tr, X_te, y_tr, y_te = train_test_split(
+    X, y_reg, test_size=0.2,
+    stratify=df['EnvLabel'], random_state=RANDOM_STATE
+)
+
+# 회귀용 오버샘플링
+try:
+    smoter = sv.SMOTER(kind='regular')
+    X_tr_res, y_tr_res = smoter.sample(X_tr.values, y_tr.values)
+    X_tr_res = pd.DataFrame(X_tr_res, columns=X_tr.columns)
+    y_tr_res = pd.Series(y_tr_res, name='LowSoilHumi')
+    print(f"▶ SMOTER 적용: {len(y_tr_res)} samples")
+except Exception:
+    print("▶ SMOTER 미지원: oversampling 스킵")
+    X_tr_res, y_tr_res = X_tr, y_tr
+
+# 모델 정의
+lgbm    = lgb.LGBMRegressor(n_estimators=1000, learning_rate=0.05, num_leaves=31,
+                             random_state=RANDOM_STATE, n_jobs=N_JOBS)
+rf_reg  = RandomForestRegressor(n_estimators=200, random_state=RANDOM_STATE, n_jobs=N_JOBS)
+ensemble_reg = VotingRegressor([('lgbm',lgbm),('rf',rf_reg)], n_jobs=1)
+
+# 회귀 학습
+try:
+    lgbm.fit(X_tr_res, y_tr_res, eval_set=[(X_te,y_te)],
+             early_stopping_rounds=50, verbose=False)
+    print("▶ LightGBM early stopping 적용")
+except Exception:
+    lgbm.fit(X_tr_res, y_tr_res)
+    print("▶ LightGBM 학습 완료 (early stopping 비지원)")
+# RF 학습
+rf_reg.fit(X_tr_res, y_tr_res)
+# 앙상블 학습 (threading backend)
+with parallel_backend('threading'):
+    ensemble_reg.fit(X_tr_res, y_tr_res)
+
+# 회귀 예측 및 평가
+def report_reg(name,y_true,y_pred):
+    rmse = np.sqrt(mean_squared_error(y_true,y_pred))
+    r2   = r2_score(y_true,y_pred)
+    print(f"{name:<20} RMSE: {rmse:.3f}  R2: {r2:.3f}")
+
+print("\n🔍 회귀 성능 (Validation)")
+report_reg('LightGBM', lgbm.predict(X_te), y_te)
+report_reg('RandomForest', rf_reg.predict(X_te), y_te)
+report_reg('Ensemble', ensemble_reg.predict(X_te), y_te)
+
+# 분류 학습 및 평가
+print("\n🔍 분류 성능 (Environment)")
+clf = RandomForestClassifier(n_estimators=200, class_weight='balanced',
+                             random_state=RANDOM_STATE, n_jobs=N_JOBS)
+X_ct, X_cv, y_ct, y_cv = train_test_split(X, df['EnvLabel'], test_size=0.2,
+                                            stratify=df['EnvLabel'], random_state=RANDOM_STATE)
+clf.fit(X_ct, y_ct)
+print(classification_report(y_cv, clf.predict(X_cv), target_names=le.classes_))
+
+# 모델 저장
+dump({'regressor': ensemble_reg, 'classifier': clf, 'encoder': le}, 'soil_models.pkl')
+print("모델 저장 완료: soil_models.pkl")

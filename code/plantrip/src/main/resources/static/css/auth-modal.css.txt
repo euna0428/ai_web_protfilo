@@ -1,0 +1,898 @@
+/* =========================================================
+   auth-modal.css (현재 문제 해결 버전)
+   - 모달 정중앙 고정
+   - 파도(물결) 배경을 "모달 전체"에 깔아서 경계 제거
+   - 로그인: 오른쪽 물결 / 회원가입: 왼쪽 물결
+   - 180도 flip 애니메이션 복구 (JS와 셀렉터 일치)
+   ========================================================= */
+
+body.is-modal-open{ overflow: hidden; }
+
+/* 라이트/다크 톤 (원하면 색만 여기서 바꾸면 됨) */
+:root{
+  --modal-overlay: rgba(0,0,0,.46);
+
+  /* 라이트 모달 */
+  --modal-surface: rgba(255,255,255,.98);
+  --modal-border: rgba(15,23,42,.10);
+  --modal-shadow: 0 24px 70px rgba(0,0,0,.25);
+  --modal-text: rgba(15,23,42,.92);
+
+  /* 물결(라이트) */
+  --wave-base: rgba(186,230,253,.55);     /* 하늘톤 */
+  --wave-a:    rgba(186,230,253,.85);
+  --wave-b:    rgba(125,211,252,.55);
+  --wave-c:    rgba(2,132,199,.10);
+}
+
+:root[data-theme="dark_disabled"]{
+  --modal-overlay: rgba(0,0,0,.62);
+
+  /* 다크 모달 */
+  --modal-surface: rgba(10,16,28,.96);
+  --modal-border: rgba(255,255,255,.12);
+  --modal-shadow: 0 30px 80px rgba(0,0,0,.52);
+  --modal-text: rgba(226,232,240,.92);
+
+  /* 물결(다크: 밝은 회색계열) */
+  --wave-base: rgba(255,255,255,.10);
+  --wave-a:    rgba(226,232,240,.22);
+  --wave-b:    rgba(148,163,184,.18);
+  --wave-c:    rgba(148,163,184,.10);
+}
+
+/* 비밀번호 찾기 설명 문구 */
+.auth-modal .helper{
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(15,23,42,.68);
+}
+:root[data-theme="dark_disabled"] .auth-modal .helper{ color: rgba(255,255,255,.70); }
+
+/* 모달 루트 */
+.auth-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+}
+.auth-modal.is-open{ display:block; }
+
+/* 배경 */
+.auth-modal__backdrop{
+  position: absolute;
+  inset: 0;
+  background: var(--modal-overlay);
+  backdrop-filter: blur(2px);
+}
+
+/* 스와이프 전환 중, 백드롭 2장이 겹치면 잔상처럼 보여서 한쪽을 숨김 */
+.auth-modal.no-backdrop .auth-modal__backdrop{
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ✅ 정중앙 고정 */
+.auth-modal__dialog{
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: min(1040px, calc(100vw - 40px));
+  max-height: min(84vh, 860px);
+  transform: translate(-50%,-50%);
+  border-radius: 24px;
+  overflow: hidden;
+
+  background: var(--modal-surface);
+  border: 1px solid var(--modal-border);
+  box-shadow: var(--modal-shadow);
+  outline: none;
+
+  /* flip이랑 공존 */
+  transform-style: preserve-3d;
+}
+
+/* ✅ 안전장치: 클래스가 남아도 모달이 '안 보이는' 상태로 고정되지 않게 */
+.auth-modal.is-open .auth-modal__dialog{ opacity: 1; }
+
+
+/* =========================================
+   [추가] 모달 오픈 팝업(입체감)
+   - JS(auth-modal.js)의 sign-in/sign-up 클래스 사용
+   ========================================= */
+.auth-modal__dialog.sign-in-prep,
+.auth-modal__dialog.sign-up-prep{
+  opacity:1; /* [safe] class가 남아도 사라지지 않게 */
+  transform: translate(-50%,-50%) perspective(1100px) translateZ(-40px) scale(.96);
+}
+.auth-modal__dialog.sign-in,
+.auth-modal__dialog.sign-up{
+  animation: modalPop .52s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes modalPop{
+  0%{ opacity:0; transform: translate(-50%,-50%) perspective(1100px) translateZ(-140px) scale(.82); }
+  55%{ opacity:1; transform: translate(-50%,-50%) perspective(1100px) translateZ(0) scale(1.06); }
+  100%{ opacity:1; transform: translate(-50%,-50%) perspective(1100px) translateZ(0) scale(1); }
+}
+
+
+/* 닫기 버튼 */
+.auth-modal__close{
+  position:absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 10;
+  width: auto;
+  height: auto;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  color: rgba(255,255,255,.92);
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  border-radius: 10px;
+  opacity: .9;
+  transition: opacity .15s ease, transform .15s ease;
+}
+:root:not([data-theme="dark_disabled"]) .auth-modal__close{ color: rgba(15,23,42,.88); }
+.auth-modal__close:hover{ opacity: 1; transform: scale(1.04); }
+.auth-modal__close:active{ transform: scale(.96); }
+
+/* =========================
+   ✅ "경계 제거" 핵심
+   - 파도 배경을 컬럼(auth-right) 안이 아니라
+     dialog 전체에 absolute로 깔고, 마스크로 녹여서 자연스럽게
+   ========================= */
+.auth-modal__wave-bg{
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  /* ✅ 사각형 박스 느낌 제거 */
+  background: transparent;
+}
+
+/* 로그인: 오른쪽에서 왼쪽으로 자연스럽게 사라지게 */
+#authModal-login .auth-modal__wave-bg{
+  -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,.95) 35%, rgba(0,0,0,0) 72%);
+          mask-image: linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,.95) 35%, rgba(0,0,0,0) 72%);
+}
+
+/* 회원가입: 왼쪽에서 오른쪽으로 자연스럽게 사라지게 */
+#authModal-signup .auth-modal__wave-bg{
+  -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,.95) 35%, rgba(0,0,0,0) 72%);
+          mask-image: linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,.95) 35%, rgba(0,0,0,0) 72%);
+  transform: scaleX(-1);
+}
+
+
+/* [TUNE] 회원가입 물방울: 왼쪽에 더 */
+#authModal-signup{ --blob-size: 820px; --blob-top: 52%; }
+
+/* 비밀번호 찾기: 작성란은 가운데지만, 물방울은 오른쪽에서 왼쪽으로 스며들게 */
+#authModal-find .auth-modal__wave-bg{
+  -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 34%, rgba(0,0,0,0) 72%);
+          mask-image: linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 34%, rgba(0,0,0,0) 72%);
+}
+
+/* =========================
+   사이드 웨이브(예시 login::before/after 느낌)
+   - 예시 코드처럼 비대칭 라운드 2겹 + 회전
+   - 폼/전환 애니메이션은 건드리지 않음
+   ========================= */
+
+/* 물방울 2겹 (공용) */
+.auth-modal__wave-bg::before,
+.auth-modal__wave-bg::after{
+  content:"";
+  position:absolute;
+
+  width: var(--blob-size, 1200px);
+  height: var(--blob-size, 1200px);
+
+  border-top-left-radius: 40%;
+  border-top-right-radius: 45%;
+  border-bottom-left-radius: 35%;
+  border-bottom-right-radius: 40%;
+
+  left: var(--blob-left, 72%);
+  bottom: var(--blob-bottom, -125%);
+
+  transform: rotate(0deg);
+  transform-origin: 50% 50%;
+  will-change: transform;
+
+  pointer-events:none;
+  z-index: 0;
+}
+
+/* 뒤 레이어 */
+.auth-modal__wave-bg::before{
+  background-color: var(--wave-a);
+  animation: wawes 6s linear infinite;
+}
+
+/* 앞 레이어 */
+.auth-modal__wave-bg::after{
+  background-color: var(--wave-b);
+  animation: wawes 7s linear infinite;
+}
+
+/* ✅ 모달별 프리셋: "너무 밖" 문제 해결(조금 더 안쪽으로) */
+#authModal-login{ --blob-left: 40%; --blob-bottom: -115%; --blob-size: 1300px; }
+#authModal-signup{ --blob-left: 45%; --blob-bottom: -115%; --blob-size: 1400px; }
+#authModal-find { --blob-left: 40%; --blob-bottom: -115%; --blob-size: 1300px; }
+
+
+/* 회전 */
+@keyframes wawes{
+  from{ transform: rotate(0deg); }
+  to  { transform: rotate(360deg); }
+}
+
+@media (max-width: 860px){
+  #authModal-signup{ --blob-left: -6%; --blob-bottom: -120%; }
+}
+
+
+/* =========================
+   모달 내용 레이아웃(2컬럼)
+   - 실제 배경은 wave-bg가 깔리므로
+     컬럼 배경/경계선은 모두 투명 처리
+   ========================= */
+.auth-modal .auth-wrap{
+  position: relative;
+  z-index: 1;                 /* ✅ wave-bg 위로 */
+  display: grid;
+  grid-template-columns: 1.08fr .92fr;
+  min-height: 560px;
+}
+
+/* =========================================
+   [추가] 센터 정렬(로그인/회원가입/찾기 공용으로 사용 가능)
+   - 폼/물결 모두 중앙에 모이게
+   ========================================= */
+.auth-modal .auth-wrap.auth-wrap--center{
+  /* ✅ find-password: 폼을 진짜 '정중앙'으로 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 560px;
+}
+.auth-modal .auth-wrap.auth-wrap--center .auth-right{ display:none; }
+.auth-modal .auth-wrap.auth-wrap--center .auth-left{
+  padding: 0 56px;
+  max-width: 540px;
+  width: 100%;
+}
+
+/* 회원가입: 폼 오른쪽, 빈 공간 왼쪽 */
+.auth-modal .auth-wrap.auth-wrap--swap,
+.auth-modal .auth-wrap.auth-wrap--reverse{
+  grid-template-columns: .92fr 1.08fr;
+}
+.auth-modal .auth-wrap.auth-wrap--swap .auth-left,
+.auth-modal .auth-wrap.auth-wrap--reverse .auth-left{ grid-column: 2; }
+.auth-modal .auth-wrap.auth-wrap--swap .auth-right,
+.auth-modal .auth-wrap.auth-wrap--reverse .auth-right{ grid-column: 1; }
+
+/* 왼쪽 폼 영역 */
+.auth-modal .auth-left{
+  padding: 44px 56px;
+  background: transparent;
+}
+
+/* 오른쪽 빈 영역(자리만 차지) */
+.auth-modal .auth-right{
+  background: transparent;
+}
+
+/* 반응형: 모바일은 1컬럼 */
+@media (max-width: 860px){
+  .auth-modal__dialog{ width: min(720px, calc(100vw - 24px)); }
+  .auth-modal .auth-wrap{ grid-template-columns: 1fr; min-height: auto; }
+  .auth-modal .auth-right{ display:none; }
+}
+
+/* =========================
+   ✅ 180도 flip 애니메이션 (JS와 정확히 매칭)
+   - 네 JS는 dialog에 is-flip-xxx 클래스를 붙임
+   - 기존 CSS는 ".auth-modal__dialog .is-flip-xxx"(자식)라서 적용이 안 됐음
+   ========================= */
+.auth-modal__dialog.is-flip-out-fwd{ animation: flipOutFwd .55s cubic-bezier(.2,.8,.2,1); }
+.auth-modal__dialog.is-flip-in-fwd { animation: flipInFwd .55s cubic-bezier(.2,.8,.2,1); }
+.auth-modal__dialog.is-flip-out-back{animation: flipOutBack .55s cubic-bezier(.2,.8,.2,1); }
+.auth-modal__dialog.is-flip-in-back{ animation: flipInBack .55s cubic-bezier(.2,.8,.2,1); }
+
+/* =========================================
+   [추가] 스와이프 전환 (로그인 <-> 비밀번호 찾기)
+   ========================================= */
+.auth-modal__dialog.is-swipe-out-left{ animation: swipeOutLeft .38s cubic-bezier(.2,.8,.2,1); }
+.auth-modal__dialog.is-swipe-in-right{ animation: swipeInRight .38s cubic-bezier(.2,.8,.2,1); }
+.auth-modal__dialog.is-swipe-out-right{ animation: swipeOutRight .38s cubic-bezier(.2,.8,.2,1); }
+.auth-modal__dialog.is-swipe-in-left{ animation: swipeInLeft .38s cubic-bezier(.2,.8,.2,1); }
+
+@keyframes swipeOutLeft{
+  from{ opacity:1; transform: translate(-50%,-50%) translateX(0) scale(1); }
+  to  { opacity:0; transform: translate(-50%,-50%) translateX(-110px) scale(.98); }
+}
+@keyframes swipeInRight{
+  from{ opacity:0; transform: translate(-50%,-50%) translateX(110px) scale(.98); }
+  to  { opacity:1; transform: translate(-50%,-50%) translateX(0) scale(1); }
+}
+@keyframes swipeOutRight{
+  from{ opacity:1; transform: translate(-50%,-50%) translateX(0) scale(1); }
+  to  { opacity:0; transform: translate(-50%,-50%) translateX(110px) scale(.98); }
+}
+@keyframes swipeInLeft{
+  from{ opacity:0; transform: translate(-50%,-50%) translateX(-110px) scale(.98); }
+  to  { opacity:1; transform: translate(-50%,-50%) translateX(0) scale(1); }
+}
+
+@keyframes flipOutFwd{
+  from{ opacity:1; transform: translate(-50%,-50%) perspective(1100px) rotateY(0deg); }
+  to  { opacity:0; transform: translate(-50%,-50%) perspective(1100px) rotateY(180deg); }
+}
+@keyframes flipInFwd{
+  from{ opacity:0; transform: translate(-50%,-50%) perspective(1100px) rotateY(-180deg); }
+  to  { opacity:1; transform: translate(-50%,-50%) perspective(1100px) rotateY(0deg); }
+}
+@keyframes flipOutBack{
+  from{ opacity:1; transform: translate(-50%,-50%) perspective(1100px) rotateY(0deg); }
+  to  { opacity:0; transform: translate(-50%,-50%) perspective(1100px) rotateY(-180deg); }
+}
+@keyframes flipInBack{
+  from{ opacity:0; transform: translate(-50%,-50%) perspective(1100px) rotateY(180deg); }
+  to  { opacity:1; transform: translate(-50%,-50%) perspective(1100px) rotateY(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .auth-modal__dialog.is-flip-out-fwd,
+  .auth-modal__dialog.is-flip-in-fwd,
+  .auth-modal__dialog.is-flip-out-back,
+  .auth-modal__dialog.is-flip-in-back{ animation: none; }
+}
+
+/* =========================================================
+   [추가] login.css / signup.css의 "페이지용 배경"이
+   모달 내부를 덮어버리는 문제 차단
+   ========================================================= */
+.auth-modal .auth-wrap{
+  background: transparent !important;
+  min-height: 560px !important;   /* 100vh 침투 방지 */
+}
+
+.auth-modal .auth-left,
+.auth-modal .auth-right{
+  background: transparent !important;
+  border: 0 !important;           /* 혹시 border-left 같은 게 있으면 제거 */
+}
+
+/* login.css / signup.css의 .auth-right::before/after 배경 제거 */
+.auth-modal .auth-right::before,
+.auth-modal .auth-right::after{
+  content: none !important;
+}
+
+/* 예전 파도 패널 클래스가 남아있어도 안 보이게 (안전장치) */
+.auth-modal .auth-modal__wave-panel,
+.auth-modal .auth-modal__side,
+.auth-modal .auth-modal__wave{
+  display: none !important;
+}
+
+/* =========================================================
+   [FIX] index.jsp에서 login.css / signup.css를 빼도
+         모달이 안 깨지게 "모달 내부 전용" 기본 스타일 포함
+   - 핵심: 전역(:root) 변수를 건드리지 않고 .auth-modal 안에서만 사용
+========================================================= */
+
+.auth-modal{
+  --bg: #ffffff;
+  --text: #111111;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --primary: #2f6fed;
+  --darkBtn: #1f1f1f;
+  --shadow: 0 10px 30px rgba(0,0,0,.12);
+  --font: "Pretendard","Noto Sans KR",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+
+  color: var(--text);
+  font-family: var(--font);
+}
+
+:root[data-theme="dark_disabled"] .auth-modal{
+  --bg: #0b1220;
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.72);
+  --line: rgba(255,255,255,.16);
+  --darkBtn: #ffffff;
+}
+
+.auth-modal, .auth-modal *{ box-sizing: border-box; }
+.auth-modal a{ color: inherit; text-decoration: none; }
+.auth-modal .underline{ text-decoration: underline; }
+
+/* ✅ 모달 내부 레이아웃 기본 */
+.auth-modal .auth-wrap{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--bg);
+}
+
+.auth-modal .auth-left{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+}
+
+/* 로고/타이틀 */
+.auth-modal .brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom: 18px;
+}
+.auth-modal .brand .logo{
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-weight: 900;
+}
+:root[data-theme="dark_disabled"] .auth-modal .brand .logo{ background:#fff; color:#111; }
+
+.auth-modal .brand .title{
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+/* 폼 */
+.auth-modal .form{
+  width: 420px;
+  max-width: 100%;
+  display:flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.auth-modal .label{
+  font-size: 14px;
+  font-weight: 800;
+  margin-top: 6px;
+}
+.auth-modal .input{
+  width: 100%;
+  height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0 14px;
+  font-size: 15px;
+  outline: none;
+  background: #fff;
+  color: var(--text);
+}
+.auth-modal .input:focus{
+  border-color: rgba(47,111,237,.55);
+  box-shadow: 0 0 0 4px rgba(47,111,237,.12);
+}
+:root[data-theme="dark_disabled"] .auth-modal .input{
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.16);
+  color: rgba(255,255,255,.92);
+}
+
+/* 비번 보기 */
+/* 비밀번호 보기 버튼(이모지 -> SVG) */
+.auth-modal .input-row{
+  position: relative;
+}
+
+.auth-modal .eye{
+  position:absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  border: 0;
+  background: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color: rgba(17,17,17,.55);
+}
+
+.auth-modal .eye:hover{
+  background: rgba(0,0,0,.05);
+  color: rgba(17,17,17,.75);
+}
+
+.auth-modal .eye:focus-visible{
+  outline: 2px solid rgba(47,111,237,.35);
+  outline-offset: 2px;
+}
+
+.auth-modal .eye-ic{
+  width: 18px;
+  height: 18px;
+  display:block;
+}
+
+/* 기본은 open 보이기 */
+.auth-modal .eye-ic--off{ display:none; }
+
+/* 버튼이 눌린 상태(= 비번 보임)일 때 off 아이콘 보여주기 */
+.auth-modal .eye[aria-pressed="true"] .eye-ic--open{ display:none; }
+.auth-modal .eye[aria-pressed="true"] .eye-ic--off{ display:block; }
+
+/* 메인 버튼 */
+.auth-modal .primary-btn{
+  height: 50px;
+  border: none;
+  border-radius: 999px;
+  background: var(--darkBtn);
+  color:#fff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor:pointer;
+}
+.auth-modal .primary-btn:hover{ filter: brightness(1.05); }
+:root[data-theme="dark_disabled"] .auth-modal .primary-btn{
+  background:#fff;
+  color:#111;
+}
+
+/* 소셜 버튼 */
+.auth-modal .social-row{
+  margin-top: 8px;
+  display:flex;
+  gap: 10px;
+}
+
+.auth-modal .social-btn{
+  flex: 1;
+  height: 46px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-weight: 800;
+  cursor: pointer;
+
+  /* ✅ a/button 공통 정렬 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  /* ✅ 링크 기본 스타일 제거 */
+  text-decoration: none;
+  color: inherit;
+
+  /* 버튼처럼 보이게 */
+  padding: 0 14px;
+  box-shadow: none;
+}
+
+/* ✅ 네 jspf에서 추가한 구조 대응 */
+.auth-modal .social-icon{
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+.auth-modal .social-text{
+  line-height: 1;
+}
+
+.auth-modal .social-btn:hover{ background:#f3f4f6; }
+
+:root[data-theme="dark_disabled"] .auth-modal .social-btn{
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.16);
+  color: rgba(255,255,255,.92);
+}
+
+/* ✅ dot은 gap으로 간격 처리 */
+.auth-modal .social-dot{
+  margin-right: 0;
+  vertical-align: baseline;
+  display:inline-block;
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  background:#e5e7eb;
+}
+/* 하단 안내 */
+.auth-modal .auth-footer{
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.auth-modal .auth-footer b{ color: var(--text); }
+
+.auth-modal .small{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.auth-modal .form-error{
+  /* ✅ 요청: 박스(배경/테두리) 없이 텍스트만 */
+  margin: 8px 0 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(220,38,38,1);
+  border-radius: 0;
+  font-size: 13px;
+  line-height: 1.2;
+  /* ✅ 크기(높이) 고정 요구: 기본은 display:none, 보일 때만 한 줄 */
+}
+
+:root[data-theme="dark_disabled"] .auth-modal .form-error{
+  background: transparent;
+  border-color: transparent;
+  color: rgba(254,202,202,1);
+}
+
+/* ✅ 필드 옆 에러(아이디/이메일/비밀번호 등) */
+.auth-modal .field-error{
+  display:none;              /* ✅ 기본은 공간 차지 X (모달 크기 유지) */
+  margin: 3px 0 6px;
+  font-size: 12px;
+  line-height: 1.2;
+  color: rgba(220,38,38,1);
+}
+
+.auth-modal .field-error.is-show{ display:block; }
+
+:root[data-theme="dark_disabled"] .auth-modal .field-error{
+  color: rgba(254,202,202,1);
+}
+
+
+/* =========================================================
+   [수정] flip 애니메이션에서 opacity 페이드 제거
+   - "회전만" 보이도록 (사라졌다 나타나는 느낌 제거)
+   ========================================================= */
+@keyframes flipOutFwd{
+  from{ transform: translate(-50%,-50%) perspective(1100px) rotateY(0deg); }
+  to  { transform: translate(-50%,-50%) perspective(1100px) rotateY(90deg); }
+}
+@keyframes flipInFwd{
+  from{ transform: translate(-50%,-50%) perspective(1100px) rotateY(-90deg); }
+  to  { transform: translate(-50%,-50%) perspective(1100px) rotateY(0deg); }
+}
+@keyframes flipOutBack{
+  from{ transform: translate(-50%,-50%) perspective(1100px) rotateY(0deg); }
+  to  { transform: translate(-50%,-50%) perspective(1100px) rotateY(-90deg); }
+}
+@keyframes flipInBack{
+  from{ transform: translate(-50%,-50%) perspective(1100px) rotateY(90deg); }
+  to  { transform: translate(-50%,-50%) perspective(1100px) rotateY(0deg); }
+}
+
+
+
+/* =========================
+   Layout: Login/Signup split (요청: 로그인 폼 왼쪽/물방울 오른쪽, 회원가입 반대)
+   ========================= */
+.auth-wrap--split{
+  display:flex;
+  align-items:stretch;
+  gap:18px;
+  padding: 26px 26px 24px;
+  height: 100%;
+}
+.auth-wrap--split.auth-wrap--reverse{ flex-direction: row-reverse; }
+
+.auth-wrap--split .auth-left{
+  flex: 1 1 56%;
+  min-width: 0;
+  display:flex;
+  flex-direction: column;
+  justify-content:center;
+}
+
+.auth-wrap--split .auth-right{
+  flex: 1 1 44%;
+  min-width: 0;
+  position: relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  /* [수정] 요청: 물방울 뒤에 보이는 '푸른 사각 박스/테두리' 제거
+     - 패널 배경/보더를 없애고, 물방울(gradient blob)만 남김
+     - 사각형 클리핑도 제거해서 박스 느낌이 사라지게 함
+  */
+  border-radius: 0;
+  overflow: visible;
+  background: transparent;
+  border: none;
+}
+
+/* 물방울/입체감 패널 */
+.auth-right .auth-blob{
+  position:absolute;
+  inset:-60px;
+  background:
+    radial-gradient(220px 220px at 30% 40%, rgba(255,255,255,.40), rgba(255,255,255,0) 60%),
+    radial-gradient(260px 260px at 70% 60%, rgba(120,200,255,.30), rgba(0,0,0,0) 60%),
+    radial-gradient(180px 180px at 55% 20%, rgba(180,140,255,.22), rgba(0,0,0,0) 60%),
+    linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02));
+  filter: blur(0px);
+  border-radius: 999px;
+  transform: rotate(12deg);
+  opacity: .95;
+}
+
+/* 다크/라이트에 따라 물방울 톤 */
+html[data-theme="dark_disabled"] .auth-wrap--split .auth-right{
+  background: transparent;
+  border: none;
+}
+html[data-theme="dark_disabled"] .auth-right .auth-blob{
+  background:
+    radial-gradient(220px 220px at 30% 40%, rgba(255,255,255,.22), rgba(255,255,255,0) 60%),
+    radial-gradient(320px 320px at 70% 60%, rgba(70,140,255,.30), rgba(0,0,0,0) 65%),
+    radial-gradient(220px 220px at 55% 20%, rgba(160,120,255,.20), rgba(0,0,0,0) 60%),
+    linear-gradient(135deg, rgba(30,70,120,.28), rgba(0,0,0,0));
+}
+
+/* (removed) auth-wrap--center padding override: 센터 정렬은 위에서 flex로 처리 */
+/* =========================
+   Exit animation (닫을 때 부드럽게 빨려 들어가는 느낌)
+   - 기존 파일에 남아 있던 불필요한 잔여 코드 제거
+   ========================= */
+.auth-modal__dialog.is-exiting{
+  animation: modalPop .90s cubic-bezier(.22, 1, .36, 1) both;
+  animation-direction: reverse;
+  will-change: transform, opacity;
+}
+
+/* 닫기 모션은 모든 팝업에서 동일하게 유지(회원가입 닫기 모션 기준) */
+
+@keyframes modalSuck{
+  0%{
+    opacity:1;
+    transform: translate(-50%,-50%) perspective(1200px) translateZ(0) scale(1);
+  }
+  45%{
+    opacity:1;
+    transform: translate(-50%,-50%) perspective(1200px) translateZ(-90px) scale(1.05);
+  }
+  100%{
+    opacity:0;
+    transform: translate(-50%,-50%) perspective(1200px) translateZ(-420px) scale(.58);
+  }
+}
+
+
+
+/* =========================
+   Login Required Prompt
+   ========================= */
+.lr-modal{
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.lr-modal.is-open{ display:flex; }
+
+.lr-backdrop{
+  position:absolute;
+  inset:0;
+  background: var(--modal-overlay);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+
+.lr-dialog{
+  color: var(--modal-text);
+  position: relative;
+  width: min(420px, calc(100vw - 28px));
+  border-radius: 18px;
+  padding: 18px 18px 16px;
+  background: var(--modal-surface);
+  border: 1px solid var(--modal-border);
+  box-shadow: var(--modal-shadow);
+  transform: translateY(14px) scale(.94);
+  opacity: 0;
+  transition: transform 260ms cubic-bezier(.16,1,.3,1), opacity 260ms ease;
+  outline: none;
+}
+
+.lr-modal.is-ready .lr-backdrop{ opacity:1; }
+.lr-modal.is-ready .lr-dialog{
+  color: var(--modal-text);
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.lr-modal.is-closing .lr-backdrop{ opacity:0; }
+.lr-modal.is-closing .lr-dialog{
+  color: var(--modal-text);
+  transform: translateY(10px) scale(.96);
+  opacity: 0;
+}
+
+.lr-icon{
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(59,130,246,.14);
+  color: rgba(59,130,246,.95);
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+:root[data-theme="dark_disabled"] .lr-icon{
+  background: rgba(120,180,255,.14);
+  color: rgba(180,210,255,.95);
+}
+
+.lr-title{
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: -.2px;
+}
+
+.lr-desc{
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  opacity: .9;
+}
+
+.lr-actions{
+  margin-top: 14px;
+  display:flex;
+  gap: 10px;
+  justify-content:flex-end;
+}
+
+.lr-btn{
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.lr-btn.ghost{
+  background: transparent;
+  color: inherit;
+  border: 1px solid rgba(255,255,255,.0);
+  box-shadow: inset 0 0 0 1px rgba(15,23,42,.12);
+}
+
+:root[data-theme="dark_disabled"] .lr-btn.ghost{
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.16);
+}
+
+.lr-btn.solid{
+  background: rgba(59,130,246,.95);
+  color: #fff;
+  box-shadow: 0 14px 26px rgba(59,130,246,.24);
+}
+
+.lr-btn.solid:hover{ filter: brightness(1.02); }
+.lr-btn.solid:active{ transform: translateY(1px); }

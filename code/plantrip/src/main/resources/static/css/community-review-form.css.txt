@@ -1,0 +1,267 @@
+/* =========================================================
+   community-review-form.css
+   - Trip.com 리뷰 작성 UI 느낌으로 write.jsp 폼만 스타일링
+   - 로직/파라미터(name="sIdx", "rvStar", "rvTitle", "rvCont", "photos") 유지
+   ========================================================= */
+
+/* write.jsp 내부에만 영향 주기 */
+.cm-main .mp-card .mp-card-body{
+  position: relative;
+}
+
+/* 상단 작성자 프리뷰 */
+.trip-review-head{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px 16px 18px;
+  border:1px solid rgba(148,163,184,.30);
+  background: rgba(255,255,255,.62);
+  border-radius:16px;
+  margin-bottom:18px;
+}
+
+:root[data-theme="dark_disabled"] .trip-review-head{
+  background: rgba(15,23,42,.35);
+  border-color: rgba(148,163,184,.22);
+}
+
+.trip-avatar{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-weight:800;
+  letter-spacing:.02em;
+  color:#0b1220;
+  background: linear-gradient(180deg, rgba(59,130,246,.22), rgba(14,165,233,.16));
+  border:1px solid rgba(59,130,246,.20);
+  flex:0 0 auto;
+}
+
+:root[data-theme="dark_disabled"] .trip-avatar{
+  color: rgba(226,232,240,.95);
+  background: linear-gradient(180deg, rgba(59,130,246,.18), rgba(14,165,233,.10));
+  border-color: rgba(59,130,246,.18);
+}
+
+.trip-meta{ flex:1; min-width:0; }
+.trip-name{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:800;
+  font-size:15px;
+}
+.trip-badge{
+  font-size:12px;
+  padding:4px 8px;
+  border-radius:999px;
+  background: rgba(59,130,246,.10);
+  border:1px solid rgba(59,130,246,.18);
+  color: rgba(30,64,175,.95);
+}
+:root[data-theme="dark_disabled"] .trip-badge{
+  background: rgba(59,130,246,.12);
+  border-color: rgba(59,130,246,.18);
+  color: rgba(191,219,254,.95);
+}
+.trip-sub{
+  margin-top:4px;
+  font-size:12px;
+  opacity:.75;
+}
+
+/* 폼 전체를 Trip 스타일 카드 느낌으로 */
+.cm-form{
+  display:grid;
+  gap:16px;
+}
+
+/* 기존 cm-field를 Trip 입력 스타일로 오버라이드 */
+.cm-field label{
+  font-weight:800;
+  font-size:13px;
+  margin-bottom:8px;
+  display:block;
+}
+
+.cm-field input[type="text"],
+.cm-field textarea,
+.cm-field select{
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(148,163,184,.34);
+  background: rgba(255,255,255,.80);
+  padding:12px 14px;
+  outline:none;
+  transition: box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+
+:root[data-theme="dark_disabled"] .cm-field input[type="text"],
+:root[data-theme="dark_disabled"] .cm-field textarea,
+:root[data-theme="dark_disabled"] .cm-field select{
+  background: rgba(15,23,42,.22);
+  border-color: rgba(148,163,184,.22);
+  color: rgba(226,232,240,.95);
+}
+
+.cm-field textarea{
+  /* ✅ 글이 길어져도 레이아웃이 밀리지 않게 textarea 내부에서만 스크롤 */
+  height: 320px;
+  max-height: 360px;
+  overflow-y: auto;
+  resize: none;
+  line-height:1.55;
+}
+
+/* ✅ 글자수 카운터(우측 하단 고정 표시) */
+.rv-cont-wrap{ position: relative; }
+.rv-cont-counter{
+  position:absolute;
+  right: 10px;
+  bottom: 8px;
+  font-size: 12px;
+  opacity: .7;
+  background: rgba(255,255,255,.72);
+  border: 1px solid rgba(148,163,184,.28);
+  padding: 4px 8px;
+  border-radius: 999px;
+  pointer-events:none;
+}
+:root[data-theme="dark_disabled"] .rv-cont-counter{
+  background: rgba(15,23,42,.38);
+  border-color: rgba(148,163,184,.20);
+}
+
+.cm-field input[type="text"]:focus,
+.cm-field textarea:focus,
+.cm-field select:focus{
+  border-color: rgba(59,130,246,.55);
+  box-shadow: 0 0 0 4px rgba(59,130,246,.14);
+  background: rgba(255,255,255,.92);
+}
+
+:root[data-theme="dark_disabled"] .cm-field input[type="text"]:focus,
+:root[data-theme="dark_disabled"] .cm-field textarea:focus,
+:root[data-theme="dark_disabled"] .cm-field select:focus{
+  background: rgba(15,23,42,.30);
+  box-shadow: 0 0 0 4px rgba(59,130,246,.18);
+}
+
+/* Trip 스타일 별점 */
+.trip-stars{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(148,163,184,.34);
+  background: rgba(255,255,255,.80);
+}
+
+:root[data-theme="dark_disabled"] .trip-stars{
+  background: rgba(15,23,42,.22);
+  border-color: rgba(148,163,184,.22);
+}
+
+.trip-star-input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+
+.trip-star{
+  font-size:20px;
+  line-height:1;
+  cursor:pointer;
+  user-select:none;
+  color: rgba(148,163,184,.65);
+  transition: transform .08s ease, color .15s ease;
+}
+.trip-star:hover{ transform: translateY(-1px) scale(1.04); }
+
+.trip-stars-hint{
+  margin-left:10px;
+  font-size:12px;
+  opacity:.7;
+  white-space:nowrap;
+}
+
+#rvStar5:checked ~ label[for="rvStar5"],
+#rvStar4:checked ~ label[for="rvStar5"],
+#rvStar4:checked ~ label[for="rvStar4"],
+#rvStar3:checked ~ label[for="rvStar5"],
+#rvStar3:checked ~ label[for="rvStar4"],
+#rvStar3:checked ~ label[for="rvStar3"],
+#rvStar2:checked ~ label[for="rvStar5"],
+#rvStar2:checked ~ label[for="rvStar4"],
+#rvStar2:checked ~ label[for="rvStar3"],
+#rvStar2:checked ~ label[for="rvStar2"],
+#rvStar1:checked ~ label[for="rvStar5"],
+#rvStar1:checked ~ label[for="rvStar4"],
+#rvStar1:checked ~ label[for="rvStar3"],
+#rvStar1:checked ~ label[for="rvStar2"],
+#rvStar1:checked ~ label[for="rvStar1"]{
+  color: rgba(250, 204, 21, .95);
+}
+
+/* 파일 업로드 영역 Trip 느낌 */
+.cm-field input[type="file"]{
+  width:100%;
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px dashed rgba(148,163,184,.55);
+  background: rgba(255,255,255,.55);
+}
+
+:root[data-theme="dark_disabled"] .cm-field input[type="file"]{
+  border-color: rgba(148,163,184,.30);
+  background: rgba(15,23,42,.18);
+}
+
+.cm-actions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  padding-top:6px;
+}
+
+/* 버튼 톤 보강(기존 클래스 유지) */
+.cm-primary{
+  border-radius:999px;
+  padding:12px 18px;
+  font-weight:800;
+}
+.cm-ghost{
+  border-radius:999px;
+  padding:12px 18px;
+  font-weight:800;
+}
+
+/* =============================
+   ✅ 지역/장소 2컬럼 배치 (A/B)
+   ============================= */
+.cm-two-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: end;
+}
+
+.cm-two-item .cm-sub-label{
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(15,23,42,.70);
+  margin: 0 0 8px;
+}
+
+:root[data-theme="dark_disabled"] .cm-two-item .cm-sub-label{
+  color: rgba(226,232,240,.80);
+}
+
+@media (max-width: 980px){
+  .cm-two-grid{ grid-template-columns: 1fr; }
+}

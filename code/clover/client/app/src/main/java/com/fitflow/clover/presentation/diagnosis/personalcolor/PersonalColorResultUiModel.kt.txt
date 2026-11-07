@@ -1,0 +1,7 @@
+package com.fitflow.clover.presentation.diagnosis.personalcolor
+
+data class PersonalColorResultUiModel(
+    val personalColor: String,
+    val resultTitle: String,
+    val resultRecommend: String
+)

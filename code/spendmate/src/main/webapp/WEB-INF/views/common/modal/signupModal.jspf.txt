@@ -1,0 +1,102 @@
+<%@ page pageEncoding="UTF-8" %>
+
+<div class="auth-modal-overlay" id="signupOverlay" aria-hidden="true">
+    <div class="auth-modal__backdrop" data-auth-close></div>
+
+    <section
+            class="auth-modal__dialog auth-modal__dialog--signup"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="signupModalTitle"
+            tabindex="-1"
+    >
+        <button type="button" class="auth-modal__close" data-auth-close aria-label="모달 닫기">×</button>
+
+        <div class="auth-modal__wave-bg" aria-hidden="true"></div>
+
+        <div class="auth-wrap auth-wrap--split auth-wrap--reverse">
+            <div class="auth-left">
+                <div class="brand">
+                    <div class="title" id="signupModalTitle">회원가입</div>
+                </div>
+
+                <form class="form" action="${pageContext.request.contextPath}/auth/register" method="post" id="signupForm">
+                    <div id="signupTermsHiddenFields"></div>
+
+                    <label class="label" for="signupEmail">이메일</label>
+                    <input
+                            class="input"
+                            type="email"
+                            id="signupEmail"
+                            name="mEmail"
+                            autocomplete="email"
+                            inputmode="email"
+                            maxlength="100"
+                            pattern="^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                            data-field="mEmail"
+                            placeholder="이메일을 입력해 주세요"
+                            required
+                    >
+
+                    <label class="label" for="signupNickname">닉네임</label>
+                    <input
+                            class="input"
+                            type="text"
+                            id="signupNickname"
+                            name="mNickname"
+                            data-field="mNickname"
+                            autocomplete="nickname"
+                            placeholder="닉네임을 입력해 주세요"
+                            required
+                    >
+
+                    <label class="label" for="signupPassword">비밀번호</label>
+                    <div class="input-row">
+                        <input
+                                class="input"
+                                type="password"
+                                id="signupPassword"
+                                name="mPw"
+                                autocomplete="new-password"
+                                minlength="8"
+                                data-field="mPw"
+                                placeholder="비밀번호를 입력해 주세요"
+                                required
+                        >
+                    </div>
+
+                    <label class="label" for="signupGender">성별</label>
+                    <select class="input" id="signupGender" name="mGender" data-field="mGender" required>
+                        <option value="">선택</option>
+                        <option value="F">여성</option>
+                        <option value="M">남성</option>
+                        <option value="N">선택 안 함</option>
+                    </select>
+
+                    <label class="label" for="signupBirthDate">생년월일</label>
+                    <input
+                            class="input"
+                            type="date"
+                            id="signupBirthDate"
+                            name="mBirthDate"
+                            data-field="mBirthDate"
+                            required
+                    >
+
+                    <button class="primary-btn" type="submit">가입하기</button>
+
+                    <div class="auth-footer">
+                        이미 계정이 있다면
+                        <button type="button" class="text-link" data-auth-open="login">
+                            로그인
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="auth-right" aria-hidden="true">
+                <div class="auth-blob"></div>
+            </div>
+        </div>
+    </section>
+</div>

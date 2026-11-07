@@ -1,0 +1,49 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+
+<footer class="footer">
+
+    <nav class="footer-nav">
+        <div class="footer-nav-inner">
+            <div class="footer-nav-links">
+                <a href="#">이용약관</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="footer-body">
+        <div class="footer-body-inner">
+            <div class="footer-brand">
+                <div class="footer-brand-logo">지출메이트</div>
+                <p class="footer-brand-desc">
+                    모든 지출을 한눈에,<br>더 스마트하게 관리하세요.
+                </p>
+            </div>
+
+            <div class="footer-info">
+                <div class="footer-info-row">
+                    <span>프로젝트 : <strong>지출메이트 (교육용 팀 프로젝트)</strong></span>
+                </div>
+                <div class="footer-info-row">
+                    <span>충청남도 천안시</span>
+                </div>
+                <div class="footer-contact">
+                    <span>✉</span>
+                    <a href="mailto:jiculmate2026@example.com">jiculmate2026@example.com</a>
+                </div>
+                <div class="footer-sns">
+                    <a href="https://github.com/Seven-Eleven-team/SevenEleven" target="_blank">
+                        <i class="bi bi-github"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottombar">
+            <div class="footer-bottombar-inner">
+                <p class="footer-copy">© 2026 지출메이트. All rights reserved.</p>
+                <p class="footer-note">본 사이트는 교육용 프로젝트입니다.</p>
+            </div>
+        </div>
+    </div>
+</footer>

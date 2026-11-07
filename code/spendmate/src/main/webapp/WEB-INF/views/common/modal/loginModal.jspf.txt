@@ -1,0 +1,82 @@
+<%@ page pageEncoding="UTF-8" %>
+
+<div class="auth-modal-overlay" id="loginOverlay" aria-hidden="true">
+    <div class="auth-modal__backdrop" data-auth-close></div>
+
+    <section
+            class="auth-modal__dialog auth-modal__dialog--login"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="loginModalTitle"
+            tabindex="-1"
+    >
+        <button type="button" class="auth-modal__close" data-auth-close aria-label="모달 닫기">×</button>
+
+        <div class="auth-modal__wave-bg" aria-hidden="true"></div>
+
+        <div class="auth-wrap auth-wrap--split">
+            <div class="auth-left">
+                <div class="brand">
+                    <div class="title" id="loginModalTitle">로그인</div>
+                </div>
+
+                <form
+                        class="form"
+                        id="loginForm"
+                        action="${pageContext.request.contextPath}/auth/login"
+                        method="post"
+                >
+                    <label class="label" for="loginId">아이디</label>
+                    <input
+                            class="input"
+                            type="text"
+                            id="loginId"
+                            name="id"
+                            autocomplete="username"
+                            placeholder="아이디를 입력해 주세요"
+                            required
+                    >
+
+                    <label class="label" for="loginPassword">비밀번호</label>
+                    <div class="input-row">
+                        <input
+                                class="input"
+                                type="password"
+                                id="loginPassword"
+                                name="password"
+                                autocomplete="current-password"
+                                placeholder="비밀번호를 입력해 주세요"
+                                required
+                        >
+                    </div>
+
+                    <button class="primary-btn" type="submit">로그인</button>
+
+                    <div class="social-row">
+                        <a
+                                class="social-btn kakao-btn"
+                                href="${pageContext.request.contextPath}/oauth2/authorization/kakao"
+                        >
+                            <span class="kakao-symbol" aria-hidden="true">K</span>
+                            <span class="social-text">카카오 로그인</span>
+                        </a>
+                    </div>
+
+                    <div class="auth-footer">
+                        <button type="button" class="text-link" data-auth-open="findPassword">
+                            비밀번호 찾기
+                        </button>
+                        <span class="footer-divider">·</span>
+                        <button type="button" class="text-link" data-auth-open="terms">
+                            신규 회원가입
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="auth-right" aria-hidden="true">
+                <div class="auth-blob"></div>
+            </div>
+        </div>
+    </section>
+</div>

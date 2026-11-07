@@ -1,0 +1,74 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!-- 회원가입 모달 -->
+<div class="auth-modal" id="authModal-signup" aria-hidden="true">
+  <div class="auth-modal__backdrop" aria-hidden="true"></div>
+
+  <div class="auth-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="authSignupTitle" tabindex="-1">
+    <button class="auth-modal__close" type="button" data-auth-close aria-label="닫기">✕</button>
+
+    <!-- dialog 전체에 깔리는 물결/물방울 배경 (회원가입은 CSS에서 “왼쪽” 앵커 처리됨) -->
+    <div class="auth-modal__wave-bg" aria-hidden="true"></div>
+
+    <!-- [수정] 회원가입은 폼이 오른쪽으로 가야 하므로 auth-wrap--swap 사용 -->
+    <div class="auth-wrap auth-wrap--swap">
+      <div class="auth-left">
+        <div class="brand">
+          <div class="logo">TP</div>
+          <div class="title" id="authSignupTitle">회원가입</div>
+        </div>
+
+        <form class="form" action="/members/register" method="post">
+          <!-- (예외 상황용) 공통 에러: 박스 없이 텍스트만 출력 -->
+          <div class="form-error" data-auth-error style="display:none;"></div>
+
+          <div class="label">이름</div>
+          <input class="input" name="mName" type="text" placeholder="이름" required />
+
+          <div class="label">아이디</div>
+          <input class="input" name="mId" type="text" placeholder="아이디" required />
+          <!-- ✅ 중복 아이디/형식 에러 -->
+          <div class="field-error" data-auth-field-error="mId"></div>
+
+          <div class="label">이메일</div>
+          <input class="input" name="mEmail" type="email" placeholder="이메일" required />
+          <!-- ✅ 중복 이메일/형식 에러 -->
+          <div class="field-error" data-auth-field-error="mEmail"></div>
+
+         <div class="label">비밀번호</div>
+<div class="input-row">
+  <input class="input" name="mPw" type="password" placeholder="비밀번호" required />
+
+  <button class="eye" type="button" aria-label="비밀번호 보기" aria-pressed="false">
+    <!-- eye-open -->
+    <svg class="eye-ic eye-ic--open" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M2.2 12c1.6-4.6 5.8-8 9.8-8s8.2 3.4 9.8 8c-1.6 4.6-5.8 8-9.8 8s-8.2-3.4-9.8-8Z"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/>
+    </svg>
+
+    <!-- eye-off -->
+    <svg class="eye-ic eye-ic--off" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 3l18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M2.2 12c1.6-4.6 5.8-8 9.8-8 2.2 0 4.4.9 6.2 2.3M21.8 12c-1.6 4.6-5.8 8-9.8 8-2.2 0-4.4-.9-6.2-2.3"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M10.2 10.2A3.2 3.2 0 0 0 12 15.2c.5 0 1-.1 1.4-.3"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+</div>
+          <!-- ✅ 비밀번호 관련 에러(필요 시) -->
+          <div class="field-error" data-auth-field-error="mPw"></div>
+          <button class="primary-btn" type="submit">회원가입</button>
+
+          <div class="auth-footer">
+            이미 회원이신가요?
+            <a class="underline" href="/members/login" data-auth-switch="login"><b>로그인</b></a>
+          </div>
+        </form>
+      </div>
+
+      <!-- [수정] 오른쪽(또는 왼쪽) 빈 자리용: 배경은 wave-bg가 담당 -->
+      <div class="auth-right" aria-hidden="true"></div>
+    </div>
+  </div>
+</div>

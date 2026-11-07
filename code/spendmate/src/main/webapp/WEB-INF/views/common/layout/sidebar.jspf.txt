@@ -1,0 +1,25 @@
+<%@ page pageEncoding="UTF-8" %>
+<nav class="sidebar" aria-label="사이드 메뉴">
+    <ul>
+        <li>
+            <a href="${pageContext.request.contextPath}/dashboard" data-auth-required="true">대시보드</a>
+        </li>
+        <li>
+            <a href="${pageContext.request.contextPath}/subscription/ott">OTT 구독</a>
+        </li>
+        <li>
+            <a href="${pageContext.request.contextPath}/party/seller-identity" data-auth-required="true">판매자 등록</a>
+        </li>
+        <li>
+            <a href="${pageContext.request.contextPath}/community">게시판</a>
+        </li>
+        <li>
+            <a href="${pageContext.request.contextPath}/support">고객센터</a>
+        </li>
+    </ul>
+    <div class="sidebar-logout">
+        <a href="/" id="sidebarLogoutButton">
+            <i class="bi bi-box-arrow-right"></i>
+            로그아웃</a>
+    </div>
+</nav>

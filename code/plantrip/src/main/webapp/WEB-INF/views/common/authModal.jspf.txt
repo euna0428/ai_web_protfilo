@@ -1,0 +1,5 @@
+<!-- auth-modal 공통 include -->
+<%@ include file="/WEB-INF/views/common/loginModal.jspf" %>
+<%@ include file="/WEB-INF/views/common/signupModal.jspf" %>
+<%@ include file="/WEB-INF/views/common/findPasswordModal.jspf" %>
+<%@ include file="/WEB-INF/views/common/loginRequiredModal.jspf" %>

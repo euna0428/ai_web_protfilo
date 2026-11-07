@@ -1,0 +1,427 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/static/pretendard.css");
+
+:root{
+  --headerH:72px;
+  --logoH:150px;
+  --logoOffset: 35px;
+  --maxW: 1200px;
+  --font: "Pretendard","Noto Sans KR",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --text:#111;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --card:#fff;
+  --shadow: 0 12px 30px rgba(0,0,0,.10);
+}
+
+*{ box-sizing:border-box; }
+a{ color:inherit; text-decoration:none; }
+.header, .header *{ font-family:var(--font); }
+button,input,select,textarea{ font-family:var(--font); }
+
+/* ✅ 공통: 고정 헤더 공간 확보 */
+body{ padding-top: calc(var(--headerH) + var(--logoOffset)); }
+
+/* ✅ 공통: footer가 화면 아래에 붙도록(콘텐츠 짧은 페이지) */
+html,body{min-height:100%;}
+body{min-height:100vh; display:flex; flex-direction:column;}
+
+
+/* container */
+.container{
+  width:min(var(--maxW), calc(100% - 48px));
+  margin:0 auto;
+}
+
+/* =========================
+   Header (항상 투명 / 글씨 검정)
+   ========================= */
+.header{
+  overflow: visible;
+  position:fixed;
+  top:0; left:0; right:0;
+  height:72px;
+  background:transparent;
+  border-bottom:1px solid transparent;
+  z-index:99999;
+  transition: transform .22s ease;
+}
+
+.header.is-solid{
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  box-shadow: 0 8px 24px rgba(0,0,0,.06);
+}
+
+
+/* 스크롤 내릴 때 숨김(요구사항: 아래로 스크롤하면 사라지고, 위로/맨 위로 오면 다시 표시) */
+.header.is-hidden{
+  transform: translateY(-110%);
+}
+
+.header-inner{
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  /* ✅ 헤더 1줄 고정(로그인/회원가입이 2줄로 떨어지는 현상 방지) */
+  flex-wrap: nowrap;
+}
+
+
+/* brand-top (로고 짤림 방지) */
+.brand-top{
+  display:flex;
+  align-items:center;
+  height: var(--headerH);
+  overflow: visible;
+  flex: 0 0 auto;
+}
+.brand-top a.brand-top{
+  display:flex;
+  align-items:center;
+  height: var(--headerH);
+  overflow: visible;
+}
+.brand-logo-img{
+  height: var(--logoH);
+  width:auto;
+  object-fit:contain;
+  display:block;
+  transform: translateY(calc((var(--headerH) - var(--logoH)) / 2 + var(--logoOffset)));
+  pointer-events:auto;
+}
+
+/* nav */
+.pt-nav{
+  display:flex;
+  align-items:center;
+  gap:26px;
+  /* ✅ 가운데 네비는 줄바꿈 없이 유지 */
+  flex: 1 1 auto;
+  justify-content: center;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.pt-nav a,
+.nav-drop-btn,
+.header-auth,
+.header-link{
+  color:var(--text);
+  font-weight:600;
+  font-size:15px;
+  letter-spacing:-.2px;
+}
+
+.pt-wave{ position:relative; }
+
+/* transport dropdown */
+.nav-dropdown{ position:relative; }
+.nav-drop-btn{
+  background:transparent;
+  border:0;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 10px;
+  border-radius:10px;
+}
+.chev{ font-size:12px; color:var(--muted); }
+
+.nav-drop-menu{
+  position:absolute;
+  top:54px;
+  left:0;
+  min-width:140px;
+  background:var(--card);
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  padding:8px;
+  display:none;
+  z-index:100000;
+}
+#transportWrap.open .nav-drop-menu{ display:block; }
+.nav-drop-menu a{
+  display:block;
+  padding:10px 10px;
+  border-radius:10px;
+  color:var(--text);
+  font-weight:600;
+}
+.nav-drop-menu a:hover{
+  background:rgba(17,17,17,.06);
+}
+
+/* right */
+.header-right{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* hamburger */
+.hamburger{ position:relative; }
+.hamburger-btn{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  border:1px solid rgba(0,0,0,.10);
+  background:rgba(255,255,255,.70);
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:5px;
+  padding:0 10px;
+}
+.hamburger-btn span{
+  display:block;
+  height:2px;
+  background:var(--text);
+  border-radius:2px;
+}
+
+/* 메뉴: 기본 숨김 → open 시 표시 */
+.hamburger-menu{
+  position:absolute;
+  top:46px;
+  right:0;
+  width:280px;
+
+  background:rgba(10,16,26,.62);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:16px;
+  box-shadow:0 18px 44px rgba(0,0,0,.32);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  padding:12px;
+  z-index:100000;
+
+  opacity:0;
+  transform: translateY(10px) scale(.98);
+  visibility:hidden;
+  pointer-events:none;
+  transition:
+    opacity .18s ease,
+    transform .18s ease,
+    visibility 0s linear .18s;
+}
+
+/* 말풍선 꼬리 */
+.hamburger-menu::before{
+  content:"";
+  position:absolute;
+  top:-8px;
+  right:18px;
+  border-style:solid;
+  border-width:0 8px 8px 8px;
+  border-color:transparent transparent rgba(255,255,255,.22) transparent;
+}
+
+/* 열림 상태: JS가 #hm에 open 클래스 부여 */
+#hm.open{
+  opacity:1;
+  transform: translateY(0) scale(1);
+  visibility:visible;
+  pointer-events:auto;
+  transition:
+    opacity .18s ease,
+    transform .18s ease,
+    visibility 0s;
+}
+
+.hm-title{
+  font-weight:800;
+  color:#fff;
+  padding:10px 10px 8px;
+  border-radius:12px;
+}
+.hm-role{
+  margin-left:6px;
+  font-weight:700;
+  font-size:12px;
+  color:rgba(255,255,255,.75);
+}
+
+.hm-divider{
+  height:1px;
+  background:rgba(255,255,255,.14);
+  margin:10px 6px;
+}
+
+.hamburger-menu .menu-item{
+  display:block;
+  padding:10px 10px;
+  border-radius:12px;
+  color:#fff;
+  font-weight:800;
+}
+.hamburger-menu .menu-item:hover{
+  background:rgba(255,255,255,.10);
+}
+
+.hamburger-menu .menu-btn{
+  width:100%;
+  border:0;
+  background:transparent;
+  cursor:pointer;
+  text-align:left;
+  padding:10px 10px;
+  border-radius:12px;
+  font-weight:900;
+  color:#fff;
+}
+.hamburger-menu .menu-btn:hover{
+  background:rgba(255,255,255,.10);
+}
+
+/* responsive */
+@media (max-width: 920px){
+  .pt-nav{ gap:14px; }
+  .pt-nav a{ font-size:14px; }
+}
+
+
+/* ===== Support(고객센터) 전용: 헤더에서 로고/로그인영역 숨김 (레이아웃은 유지) ===== */
+.header.is-support .brand-top{
+  visibility: hidden;
+  pointer-events: none;
+}
+.header.is-support .header-right{
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ===== 현재 페이지 밑줄(Underline) - 레이아웃 영향 없음 ===== */
+.pt-nav .pt-wave{ position: relative; }
+.pt-nav a.pt-wave.active::after,
+.pt-nav .nav-drop-btn.pt-wave.active::after{
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+/* =========================================================
+   [수정] 햄버거 메뉴 버튼 -> 마이페이지 스타일 프로필 아바타로 변경
+   ========================================================= */
+
+/* 1. ✅ 기존 햄버거 잔재(검은 선, SVG, span, ::before) 완벽하게 숨기기 */
+.btn-menu *, 
+.header-menu-btn *,
+.hamburger-btn * { 
+  display: none !important; /* 내부의 모든 태그(선) 삭제 */
+}
+.btn-menu::before, 
+.header-menu-btn::before,
+.hamburger-btn::before {
+  display: none !important;
+  content: none !important; /* ::before로 만든 선 삭제 */
+}
+
+/* 2. 버튼 자체를 동그란 아바타 틀로 변경 + 내부 정렬 기준점 설정 */
+.btn-menu, 
+.header-menu-btn,
+.hamburger-btn {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  border-radius: 50% !important; 
+  background: linear-gradient(135deg, #e0f2fe, #dbeafe) !important; 
+  border: 1px solid rgba(47,111,237,.15) !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
+  display: inline-block !important; 
+  padding: 0 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  
+  /* 글씨 등 잔여물 투명화 */
+  color: transparent !important;
+  font-size: 0 !important;
+  
+  /* 위치 교정 */
+  margin: 0 0 0 16px !important;
+  position: relative !important;
+  line-height: 0 !important; 
+  overflow: hidden !important; 
+  vertical-align: middle !important;
+  top: auto !important;
+  bottom: auto !important;
+  right: auto !important;
+  transform: none !important; 
+}
+
+/* 3. 마우스 올렸을 때(Hover) 액션 */
+.btn-menu:hover, 
+.header-menu-btn:hover,
+.hamburger-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 14px rgba(50, 100, 255, 0.15) !important;
+}
+
+/* 4. 사람 모양 아이콘을 동그라미 안에 완벽한 중앙 배치 */
+.btn-menu::after, 
+.header-menu-btn::after,
+.hamburger-btn::after {
+  content: "" !important;
+  display: block !important;
+  width: 28px !important; 
+  height: 28px !important;
+  
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2360a5fa'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important; 
+}
+
+/* =========================================================
+   [추가] 전역 화면 전환 애니메이션 (Fade-in & Slide-up)
+   - 헤더 깨짐 방지를 위해 body에는 투명도만, 콘텐츠에는 슬라이드업 적용
+   ========================================================= */
+
+/* 1. 페이지 전체 페이드인 (깜빡임 방지) */
+@keyframes globalFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+body {
+  animation: globalFadeIn 0.4s ease-out forwards !important;
+}
+
+/* 2. 각 페이지의 핵심 메인 콘텐츠만 아래에서 위로 부드럽게 올라오는 효과 */
+@keyframes contentSlideUp {
+  0% { 
+    transform: translateY(15px); 
+  }
+  100% { 
+    transform: translateY(0); 
+  }
+}
+
+/* 분석된 20개 CSS의 메인 콘텐츠 컨테이너들을 모두 타겟팅 */
+main, 
+.cm-shell, 
+.tp-wrap, 
+.support-hub, 
+.admin-container,
+.pt-wizard-top,
+.map-search,
+.auth-container {
+  animation: contentSlideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
+}

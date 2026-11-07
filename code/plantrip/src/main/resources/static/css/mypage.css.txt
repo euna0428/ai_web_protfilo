@@ -1,0 +1,593 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/static/pretendard.css");
+
+:root{
+  --bg-dark:#0b1220;
+  --glass: rgba(255,255,255,.10);
+  --glass-line: rgba(255,255,255,.16);
+  --text-on-dark: rgba(255,255,255,.92);
+  --muted-on-dark: rgba(255,255,255,.72);
+  --primary: #1f6feb;
+  --shadow-dark: 0 18px 50px rgba(0,0,0,.35);
+  --r22: 22px;
+
+  --bg: var(--bg-dark);
+  --panel: var(--glass);
+  --text: var(--text-on-dark);
+  --muted: var(--muted-on-dark);
+  --line: var(--glass-line);
+  --line-soft: var(--glass-line);
+  --shadow2: var(--shadow-dark);
+}
+
+*{ box-sizing:border-box; }
+
+/* 💡 스크롤 막힘 해결의 핵심: 강제 높이 제한(height: 100%) 삭제 */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: auto !important; /* 이전의 100%를 무력화 */
+  min-height: 100vh;
+}
+
+body {
+  color: var(--text);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Light theme tokens */
+ :root[data-theme="light"]{
+   --bg: #f6f7fb;
+   --panel: #ffffff;
+   --text: #111;
+   --muted: #6b7280;
+   --line: rgba(0,0,0,.10);
+   --line-soft: rgba(0,0,0,.08);
+   --shadow2: 0 14px 40px rgba(0,0,0,.05);
+ }
+
+:root[data-theme="light"] .mp-card,
+:root[data-theme="light"] .mp-info-card {
+  border-color: rgba(47,111,237,.15);
+}
+:root[data-theme="light"] .mp-nav a.active {
+  background: rgba(47,111,237,.10);
+  border: 1px solid rgba(47,111,237,.22);
+}
+:root[data-theme="light"] .mp-nav a:hover {
+  background: rgba(47,111,237,.06);
+}
+:root[data-theme="light"] .mp-nav a.active::before {
+  background: rgba(47,111,237,.80);
+}
+:root[data-theme="light"] .mp-card-head {
+  background: linear-gradient(90deg, rgba(47,111,237,.06), rgba(24,167,167,.04));
+  border-bottom: 1px solid var(--line-soft);
+}
+
+/* 💡 패딩 100px 적용됨 */
+.mp-shell {
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 100px 26px 80px 26px !important;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 40px;
+  align-items: start;
+  flex: 1 0 auto;
+  box-sizing: border-box;
+}
+
+.mp-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow2);
+  border-radius: var(--r22);
+}
+
+/* 사이드바 */
+.mp-side {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  position: sticky;
+  top: 100px; /* 스크롤 할 때 메뉴가 따라다니게 함 */
+}
+
+.mp-nav { display:flex; flex-direction:column; gap: 8px; }
+.mp-nav a {
+  width:100%; border: 0; background: transparent; text-align:left;
+  padding: 14px 16px; border-radius: 12px; font-weight: 800; font-size: 15px;
+  color: var(--muted); cursor:pointer; display:flex; align-items:center;
+  gap: 12px; transition: all .2s ease; text-decoration:none;
+}
+.mp-nav a:hover { 
+  background: rgba(0,0,0,.04); 
+  color: var(--text);
+}
+.mp-nav a.active { 
+  color: var(--primary);
+  background: rgba(47,111,237,.08); 
+  position: relative; 
+}
+.mp-nav a.active::before {
+  content:""; position:absolute; left: 8px; top: 50%; transform: translateY(-50%);
+  width: 4px; height: 18px; border-radius: 4px; background: var(--primary);
+}
+.mp-ico { width: 20px; height: 20px; display:inline-flex; color: inherit; }
+.mp-ico svg { width:20px; height:20px; display:block; }
+
+/* Center Main */
+.mp-main {
+  display:flex;
+  flex-direction:column;
+  gap: 30px;
+}
+
+/* ==================================
+   내 정보 카드
+=================================== */
+.mp-info-card {
+  display: flex;
+  flex-direction: column;
+  padding: 30px 40px;
+}
+
+.info-body {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.avatar-wrap { flex-shrink: 0; }
+.css-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #e0f2fe, #dbeafe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #60a5fa;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  border: 1px solid rgba(47,111,237,.15);
+}
+.css-avatar svg { width: 56px; height: 56px; }
+
+.info-content { flex: 1; }
+.info-title-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  border-bottom: 2px solid var(--line-soft);
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+.info-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+}
+.role-badge {
+  font-size: 13px;
+  color: #94a3b8; 
+  font-weight: 700;
+}
+
+.info-table { display: flex; flex-direction: column; gap: 16px; }
+.info-row { display: flex; align-items: center; }
+.info-row .lbl { width: 100px; font-size: 14px; font-weight: 700; color: var(--muted); }
+.info-row .val { font-size: 15px; font-weight: 700; color: var(--text); }
+
+.social-badge {
+  display: inline-flex; align-items: center; padding: 4px 10px;
+  border-radius: 999px; font-size: 11px; font-weight: 900;
+}
+.social-badge.kakao { background: #fee500; color: #371d1e; }
+
+.info-footer { margin-top: 20px; display: flex; justify-content: flex-end; }
+.btn-withdraw {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-family: inherit;
+  line-height: 1;
+  font-size: 13px; color: #94a3b8; text-decoration: underline;
+  text-underline-offset: 4px; cursor: pointer; transition: color 0.2s;
+}
+.btn-withdraw:hover { color: #ef4444; }
+
+/* ==================================
+   회원 탈퇴 확인 모달 (PlanTrip 톤)
+=================================== */
+.pt-confirm{
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+}
+.pt-confirm__backdrop{
+  position:absolute;
+  inset:0;
+  background: rgba(2,6,23,.35);
+  backdrop-filter: blur(6px);
+}
+.pt-confirm__panel{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform: translate(-50%, -50%);
+  width: min(460px, calc(100% - 36px));
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.20);
+  padding: 20px 18px 16px;
+}
+.pt-confirm__title{
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 900;
+  color: #0f172a;
+}
+.pt-confirm__desc{
+  margin: 0 0 16px;
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 700;
+}
+.pt-confirm__actions{
+  display:flex;
+  justify-content:flex-end;
+  gap: 10px;
+}
+.pt-confirm__btn{
+  border: 1px solid rgba(2,6,23,.10);
+  background:#fff;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 900;
+  cursor:pointer;
+  font-size: 13px;
+}
+.pt-confirm__btn--ghost{
+  color:#334155;
+}
+.pt-confirm__btn--danger{
+  border-color: rgba(239,68,68,.25);
+  background: rgba(239,68,68,.10);
+  color:#ef4444;
+}
+.pt-confirm__btn:hover{ transform: translateY(-1px); }
+
+/* ==================================
+   최근 찜한 장소 카드 헤더
+=================================== */
+.mp-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 30px;
+}
+.mp-card-title { font-size: 17px; font-weight: 800; }
+.mp-card-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.mp-card-body { padding: 30px; }
+
+/* ==================================
+   💡 찜한 장소 덱 (4열 배치로 8개 카드에 최적화)
+=================================== */
+.mp-deck {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 20px;
+}
+
+.wish-card-item {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(255,255,255,.92);
+  box-shadow: var(--shadow2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.wish-card-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+
+.wish-card-item .thumb {
+  height: 160px; 
+  background-size: cover;
+  background-position: center;
+}
+
+.wish-card-item .meta { padding: 18px; }
+.tag-wrap { display: flex; gap: 6px; margin-bottom: 10px; }
+.tag-city { background: #e2e8f0; color: #475569; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; }
+.tag-cat { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; }
+.tag-tour { background: #f0f0f0; color: #333; }
+.tag-stay { background: #eef2ff; color: #3b82f6; }
+.tag-act { background: #f0fdf4; color: #22c55e; }
+.tag-food { background: #fff5f5; color: #ef4444; }
+
+.wish-card-item .ttl { font-weight: 800; font-size: 16px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
+.wish-card-item .sub { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Responsive */
+@media (max-width: 1024px){
+  .mp-deck { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px){
+  .mp-shell { grid-template-columns: 1fr; padding-top: 120px !important; }
+  .mp-side { position: relative; top: 0; padding-bottom: 20px !important; }
+  .mp-nav { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+  .mp-nav a { width: auto; padding: 10px 16px; }
+  .info-body { flex-direction: column; text-align: center; gap: 20px; }
+  .info-title-wrap { justify-content: center; }
+  .info-row { justify-content: center; }
+  .info-row .lbl { text-align: right; margin-right: 15px; width: 60px; }
+  .info-footer { justify-content: center; }
+  .mp-deck { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 500px){
+  .mp-deck { grid-template-columns: 1fr; }
+}
+
+/* ========================================================
+   내 여행 계획 / 내 여행 후기 전용 테이블 UI
+======================================================== */
+.mp-table { width: 100%; border-collapse: collapse; text-align: center; margin-top: 10px; }
+.mp-table th { padding: 15px; background: #f8f9fa; color: #555; font-weight: 700; border-bottom: 2px solid #eaeaea; font-size: 15px; text-align: center; }
+.mp-table td { padding: 18px 15px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; color: #333; font-size: 14px; }
+.mp-table tbody tr:hover { background: #fafbfc; }
+
+.td-title { text-align: center !important; font-weight: 600; color: #111 !important; }
+.td-title a { color: #111; text-decoration: none; transition: 0.2s; }
+.td-title a:hover { color: #3264ff; text-decoration: underline; }
+
+.btn-delete { background: #fff; border: 1px solid #ff4b4b; color: #ff4b4b; padding: 6px 14px; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 13px; font-weight: bold; }
+.btn-delete:hover { background: #ff4b4b; color: #fff; }
+
+.btn-view, .btn-edit { background: #f0f4ff; border: 1px solid transparent; color: #3264ff; padding: 6px 14px; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 13px; font-weight: bold; text-decoration: none; display: inline-block; }
+.btn-view:hover, .btn-edit:hover { background: #3264ff; color: #fff; }
+
+.mp-pagination { display: flex; justify-content: center; gap: 8px; margin-top: 30px; }
+.mp-page { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #eee; background: #fff; color: #555; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+.mp-page:hover { background: #f0f4ff; color: #3264ff; border-color: #3264ff; }
+.mp-page.is-active { background: #3264ff; color: #fff; border-color: #3264ff; box-shadow: 0 4px 10px rgba(50, 100, 255, 0.2); }
+
+/* ========================================================
+   [신규 추가] 회원정보 수정 / 비밀번호 확인 폼(Form) UI
+======================================================== */
+.mp-form {
+  max-width: 480px;         /* 폼을 화면 중앙에 적절한 크기로 묶어줌 */
+  margin: 0 auto;           /* 폼 자체를 가운데 정렬 */
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 10px 0 20px 0;
+}
+
+.mp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left; /* 라벨과 인력칸 안의 글씨는 왼쪽 정렬 */
+}
+
+.mp-field label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+}
+
+.mp-field input {
+  padding: 14px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s;
+  background: #f8fafc;
+  color: #111;
+}
+
+.mp-field input:focus {
+  background: #fff;
+  border-color: #3264ff;
+  box-shadow: 0 0 0 4px rgba(50, 100, 255, 0.1);
+}
+
+.mp-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* 폼 전용 메인 버튼 */
+.mp-btn {
+  flex: 1;
+  padding: 15px;
+  background: #3264ff;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+.mp-btn:hover {
+  background: #1f4bcf;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(50, 100, 255, 0.2);
+}
+
+/* 취소 등 뒤로가기 버튼 */
+.mp-btn.danger {
+  background: #fff;
+  color: #555;
+  border: 1px solid #e2e8f0;
+}
+.mp-btn.danger:hover {
+  background: #f1f5f9;
+  color: #111;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* 에러 메시지 */
+.mp-error {
+  max-width: 480px;
+  margin: 0 auto 20px auto;
+  padding: 14px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #ef4444;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* ========================================================
+   [추가] 찜 목록 상단 통합 필터 카드 디자인 (트립닷컴 스타일)
+======================================================== */
+.wish-filter-container {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  margin-bottom: 30px;
+  border: 1px solid #f0f0f0;
+}
+
+.city-tabs, .cat-buttons {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 5px;
+}
+.city-tabs::-webkit-scrollbar, .cat-buttons::-webkit-scrollbar { display: none; }
+
+/* 부드러운 애니메이션 효과 */
+.wish-card-item {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ========================================================
+   [신규 추가] wishlist 전용 트립닷컴 스타일 통합 필터 디자인
+======================================================== */
+.wish-filter-container {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06); /* 부드러운 그림자 */
+  border: 1px solid #f0f0f0;
+  margin-bottom: 25px; /* 필터와 카드 리스트 사이 간격 */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 도시 탭 디자인 */
+.city-tabs {
+  display: flex;
+  gap: 32px;
+  border-bottom: 1px solid #f4f4f4;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.city-tabs::-webkit-scrollbar { display: none; }
+
+.city-tab {
+  font-size: 16px;
+  font-weight: 500;
+  color: #888;
+  cursor: pointer;
+  padding-bottom: 15px;
+  position: relative;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+.city-tab:hover { color: #111; }
+.city-tab.active {
+  color: #3264ff; /* 트립닷컴 느낌의 파란색 강조 */
+  font-weight: 800;
+}
+.city-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #3264ff;
+  border-radius: 3px 3px 0 0;
+}
+
+/* 카테고리 버튼 디자인 */
+.cat-buttons {
+  display: flex;
+  gap: 10px;
+}
+.cat-btn {
+  padding: 10px 20px;
+  background: #f4f5f7;
+  color: #555;
+  border: none;
+  border-radius: 50px; /* 알약 모양 버튼 */
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cat-btn:hover { background: #eef2ff; color: #3264ff; }
+.cat-btn.active {
+  background: #3264ff;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(50, 100, 255, 0.3);
+}
+
+/* 찜 목록 카드 리스트 모션 */
+.wish-card-item {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.wish-empty-msg {
+  padding: 60px 0;
+  text-align: center;
+  color: #999;
+  font-size: 15px;
+}
+
+.wish-link-wrapper {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+
+/* ✅ 추가: check.jsp 비밀번호 확인용 텍스트 에러 스타일 */
+.mp-error-text {
+  color: #ef4444;       /* 붉은색 글씨 */
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;  /* 버튼과의 간격 */
+  text-align: center;
+  display: block;
+}

@@ -1,0 +1,296 @@
+/* =========================================================
+   admin-components.css
+   - 샘플(Travel Planner Admin) 느낌으로 통일
+   - admin-console.css(레이아웃/카드/테이블) 위에 얹는 공통 컴포넌트 스타일
+   ========================================================= */
+
+:root{
+  --admin-primary: #3b82f6;
+  --admin-primary-soft: rgba(59,130,246,.12);
+  --admin-danger: #ef4444;
+  --admin-success: #22c55e;
+  --admin-text: rgba(15,23,42,.92);
+  --admin-muted: rgba(15,23,42,.62);
+  --admin-line: rgba(15,23,42,.10);
+  --admin-surface: rgba(255,255,255,.92);
+}
+
+:root[data-theme="dark_disabled"]{
+  --admin-text: rgba(255,255,255,.92);
+  --admin-muted: rgba(255,255,255,.70);
+  --admin-line: rgba(255,255,255,.12);
+  --admin-surface: rgba(15,23,42,.88);
+}
+
+/* topbar actions */
+.admin-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.admin-userchip{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--admin-line);
+  background: rgba(255,255,255,.55);
+  color: var(--admin-text);
+  font-weight: 900;
+  font-size: 12px;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+:root[data-theme="dark_disabled"] .admin-userchip{
+  background: rgba(2,6,23,.40);
+}
+
+/* =========================
+   Theme Toggle (same UI as user pages)
+   - 캡슐 + 이동하는 원(인디케이터)
+   ========================= */
+.theme-toggle.theme-toggle--pill{
+  --tt-w: 64px;
+  --tt-h: 32px;
+  --tt-pad: 4px;
+  --tt-ball: 24px;
+  --tt-shift: calc(var(--tt-w) - var(--tt-ball) - (var(--tt-pad) * 2));
+
+  width:var(--tt-w);
+  height:var(--tt-h);
+  border-radius:999px;
+  padding:var(--tt-pad);
+  position: relative;
+  overflow: hidden;
+  display:inline-flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:0;
+
+  border: 1px solid var(--admin-line);
+  background: rgba(255,255,255,.65);
+  color: var(--admin-text);
+  cursor:pointer;
+  box-shadow:
+    0 10px 22px rgba(0,0,0,.10),
+    inset 0 1px 0 rgba(255,255,255,.16);
+}
+
+:root[data-theme="dark_disabled"] .theme-toggle.theme-toggle--pill{
+  background: rgba(2,6,23,.45);
+  box-shadow:
+    0 10px 22px rgba(0,0,0,.25),
+    inset 0 1px 0 rgba(255,255,255,.10);
+}
+
+.theme-toggle.theme-toggle--pill .tt-icon{
+  width:var(--tt-ball);
+  height:var(--tt-ball);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size: 14px;
+  line-height: 1;
+  z-index: 1;
+  user-select:none;
+}
+
+.theme-toggle.theme-toggle--pill .tt-indicator{
+  position:absolute;
+  top:var(--tt-pad);
+  left:var(--tt-pad);
+  width:var(--tt-ball);
+  height:var(--tt-ball);
+  border-radius:999px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.92), rgba(70,170,255,.92));
+  box-shadow:
+    0 10px 20px rgba(0,0,0,.22),
+    inset 0 1px 0 rgba(255,255,255,.25);
+  transform: translateX(0);
+  transition: transform .22s ease;
+}
+
+:root[data-theme="dark_disabled"] .theme-toggle.theme-toggle--pill .tt-indicator{
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.92), rgba(25,80,160,.92));
+}
+
+html[data-theme="dark_disabled"] .theme-toggle.theme-toggle--pill .tt-indicator{
+  transform: translateX(var(--tt-shift));
+}
+
+/* buttons */
+.admin-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--admin-line);
+  background: rgba(255,255,255,.65);
+  color: var(--admin-text);
+  font-weight: 900;
+  font-size: 13px;
+  text-decoration:none;
+  cursor:pointer;
+}
+:root[data-theme="dark_disabled"] .admin-btn{
+  background: rgba(2,6,23,.45);
+}
+
+.admin-btn:hover{ filter: brightness(.98); }
+
+.admin-btn.is-primary{
+  background: var(--admin-primary);
+  border-color: rgba(59,130,246,.55);
+  color: #fff;
+}
+
+.admin-btn.is-danger{
+  background: rgba(239,68,68,.12);
+  border-color: rgba(239,68,68,.35);
+  color: var(--admin-danger);
+}
+
+/* text */
+.admin-muted{
+  color: rgba(2,6,23,.55);
+  font-weight: 800;
+}
+:root[data-theme="dark_disabled"] .admin-muted{
+  color: rgba(255,255,255,.55);
+}
+
+/* 대시보드 빈 상태 문구에서 링크가 위로 뜨는 현상 방지 */
+.admin-linktext{
+  display:inline;
+  vertical-align: baseline;
+  line-height: inherit;
+  font-weight: 900;
+  color: var(--admin-primary);
+}
+
+/* inputs */
+.admin-input,
+.admin-textarea,
+.admin-select{
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--admin-line);
+  background: rgba(255,255,255,.65);
+  color: var(--admin-text);
+  outline: none;
+}
+:root[data-theme="dark_disabled"] .admin-input,
+:root[data-theme="dark_disabled"] .admin-textarea,
+:root[data-theme="dark_disabled"] .admin-select{
+  background: rgba(2,6,23,.45);
+}
+
+.admin-input:focus,
+.admin-textarea:focus,
+.admin-select:focus{
+  border-color: rgba(59,130,246,.55);
+  box-shadow: 0 0 0 4px rgba(59,130,246,.12);
+}
+
+/* simple grid */
+.admin-row{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+  flex-wrap: wrap;
+}
+
+.admin-row.is-between{ justify-content: space-between; }
+
+.admin-formgrid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.admin-formgrid .admin-field label{
+  display:block;
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--admin-muted);
+  margin: 0 0 6px;
+}
+
+/* consistent page container */
+.admin-pagewrap{
+  display:flex;
+  flex-direction:column;
+  gap: 16px;
+}
+
+/* tables */
+.admin-tablewrap{
+  overflow:hidden;
+  border-radius: 18px;
+  border: 1px solid var(--admin-line);
+  background: var(--admin-surface);
+}
+
+/* small helper */
+.admin-right{ margin-left: auto; }
+
+
+.admin-nav__sub{
+  margin: 10px 12px 0;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.10);
+}
+:root[data-theme="light"] .admin-nav__sub{
+  background: rgba(255,255,255,.95);
+  border-color: rgba(15,23,42,.10);
+}
+.admin-nav__subitem{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: rgba(255,255,255,.88);
+  text-decoration:none;
+}
+:root[data-theme="light"] .admin-nav__subitem{ color: rgba(15,23,42,.90); }
+.admin-nav__subitem:hover{ background: rgba(255,255,255,.08); }
+:root[data-theme="light"] .admin-nav__subitem:hover{ background: rgba(15,23,42,.06); }
+.admin-nav__subitem.is-active{ background: rgba(59,130,246,.18); }
+:root[data-theme="light"] .admin-nav__subitem.is-active{ background: rgba(59,130,246,.12); }
+
+.admin-btn.is-ghost{
+  background: transparent;
+  border: 1px solid var(--admin-border);
+  color: var(--admin-muted);
+}
+
+/* ==============================
+   Admin Modal (회원 삭제 확인)
+   ============================== */
+.admin-modal{ position: fixed; inset: 0; z-index: 9999; display:none; }
+.admin-modal.is-open{ display:block; }
+.admin-modal__dim{ position:absolute; inset:0; background: rgba(0,0,0,.45); }
+.admin-modal__panel{
+  position: relative;
+  width: min(520px, calc(100% - 32px));
+  margin: 18vh auto 0;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 22px 70px rgba(0,0,0,.28);
+  padding: 18px 18px 16px;
+}
+.admin-modal__title{ margin: 0 0 8px; font-size: 18px; font-weight: 900; }
+.admin-modal__desc{ margin: 0 0 16px; color:#4b5563; line-height: 1.45; }
+.admin-modal__actions{ display:flex; justify-content:flex-end; gap:10px; align-items:center; }

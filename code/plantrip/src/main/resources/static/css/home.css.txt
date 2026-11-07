@@ -1,0 +1,702 @@
+:root{
+  --homeCardW: 380px; /* 인기/맞춤 카드 공통 폭 */
+  --homeCardGap: 20px;
+  --homeCardImgH: 310px; /* ✅ 카드 이미지 영역 높이(세로 더 길게) */
+  --homeCardH: 420px;    /* ✅ 오버레이 카드 전체 높이(세로 더 길게) */
+}
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/static/pretendard.css");
+
+:root{
+  --headerH: 72px;
+  --logoH: 150px;
+  --logoOffset: 35px; /* 로고가 위로 튀는 현상 방지용 */
+  --bg:#fff;
+  --text:#111;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --primary:#2f6fed;
+  --shadow:0 10px 30px rgba(0,0,0,.12);
+  --maxW:1200px;
+  --font:"Pretendard","Noto Sans KR",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --scriptFont:"Dancing Script","Pretendard","Noto Sans KR",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  
+  /* 밝은 메인 사진으로 복구 */
+  --hero-bg: url("/img/main_light.jpg"); 
+  --page-text: #111;
+  --page-muted: #6b7280;
+  --header-solid-bg: rgba(255,255,255,.92);
+  --header-solid-text: #111;
+}
+
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; scrollbar-gutter: stable; overflow-x: hidden; }
+body{ margin:0; font-family:var(--font); color:var(--text); background:var(--bg); padding-top:0 !important; }
+
+/* 배경 구조 복구 */
+body::before{
+  content:""; position:fixed; inset:0;
+  background: var(--hero-bg) center/cover no-repeat; z-index:-2;
+}
+body::after{
+  content:""; position:fixed; inset:0;
+  background:linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.2)); z-index:-1;
+}
+
+a{ color:inherit; text-decoration:none; }
+.container{ width:min(var(--maxW), calc(100% - 48px)); margin:0 auto; }
+
+/* ============================================================
+   ✅ 1. 헤더 (배경 투명 + 글씨 검정 + 로고 위치/짤림 복구)
+============================================================ */
+.header{
+  overflow: visible;
+  background:transparent; position:fixed; top:0; left:0; right:0;
+  height:var(--headerH); z-index: 99999;
+  transition: all .25s ease;
+  color: #000; /* 글씨 검정 */
+}
+.header.is-hidden{ transform: translateY(-110%); }
+.header.is-solid{
+  background: var(--header-solid-bg);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+
+.header-inner{
+  height:var(--headerH);
+  display:grid;
+  grid-template-columns:200px 1fr auto;
+  align-items:center;
+  overflow: visible; /* ✅ 로고 짤림 방지 */
+}
+
+.brand-top{
+  display:flex;
+  align-items:center;
+  width:200px;
+  height:var(--headerH);
+  overflow: visible; /* ✅ 로고 짤림 방지 */
+}
+
+/* ✅ 로고가 헤더 높이보다 크므로, 반드시 overflow visible + transform으로 중앙 맞춤 */
+.brand-logo-img{
+  height:var(--logoH);
+  width:auto;
+  transform: translateY(calc((var(--headerH) - var(--logoH)) / 2 + var(--logoOffset)));
+  display:block;
+  object-fit:contain;
+}
+
+.nav{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:28px;
+  font-weight:700;
+  flex-wrap:nowrap;
+  white-space:nowrap;
+  min-width:0;
+}
+
+.header-link{ font-weight:900; padding:8px 10px; border-radius:10px; }
+
+/* 비로그인(로그인/회원가입) 링크 스타일: 2줄로 내려가는 현상 방지 */
+.header-auth{
+  font-weight:800;
+  padding:8px 10px;
+  border-radius:10px;
+  white-space:nowrap;
+}
+.header-auth:hover{ background: rgba(255,255,255,.28); }
+
+/* =========================
+   ✅ 로그인 후 햄버거 메뉴 (header.css에 있던 것 home.css로 이관)
+   ========================= */
+.header-right{
+  display:flex;
+  align-items:center;
+  gap:14px; /* 기존 gap이 있으면 유지해도 됨 */
+  justify-content:flex-end;
+  white-space:nowrap;
+}
+
+/* hamburger */
+.hamburger{ position:relative; }
+
+.hamburger-btn{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  border:1px solid rgba(0,0,0,.10);
+  background:rgba(255,255,255,.70);
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:5px;
+  padding:0 10px;
+}
+
+.hamburger-btn span{
+  display:block;
+  height:2px;
+  background:var(--text, #111);
+  border-radius:2px;
+}
+
+/* 메뉴: 기본 숨김 → open 시 표시 */
+.hamburger-menu{
+  position:absolute;
+  top:46px;
+  right:0;
+  width:280px;
+
+  background:rgba(10,16,26,.62);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:16px;
+  box-shadow:0 18px 44px rgba(0,0,0,.32);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  padding:12px;
+  z-index:100000;
+
+  opacity:0;
+  transform: translateY(10px) scale(.98);
+  visibility:hidden;
+  pointer-events:none;
+  transition:
+    opacity .18s ease,
+    transform .18s ease,
+    visibility 0s linear .18s;
+}
+
+/* 말풍선 꼬리 */
+.hamburger-menu::before{
+  content:"";
+  position:absolute;
+  top:-8px;
+  right:18px;
+  border-style:solid;
+  border-width:0 8px 8px 8px;
+  border-color:transparent transparent rgba(255,255,255,.22) transparent;
+}
+
+/* 열림 상태: JS가 #hm에 open 클래스 부여 */
+#hm.open{
+  opacity:1;
+  transform: translateY(0) scale(1);
+  visibility:visible;
+  pointer-events:auto;
+  transition:
+    opacity .18s ease,
+    transform .18s ease,
+    visibility 0s;
+}
+
+/* 내부 항목(기본 최소 스타일) */
+.hm-title{
+  font-weight:800;
+  color:#fff;
+  padding:10px 10px 8px;
+}
+
+.hm-role{ font-weight:700; opacity:.85; margin-left:6px; }
+
+.menu-item{
+  display:block;
+  padding:10px 10px;
+  border-radius:12px;
+  color:#fff;
+  font-weight:700;
+}
+.menu-item:hover{ background:rgba(255,255,255,.10); }
+
+.hm-divider{
+  height:1px;
+  margin:10px 6px;
+  background:rgba(255,255,255,.18);
+}
+
+.menu-btn{
+  width:100%;
+  border:0;
+  border-radius:12px;
+  padding:10px 12px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+/* 교통수단 드롭다운 복구 */
+.nav-dropdown { position: relative; display: inline-block; }
+.nav-drop-btn { background: none; border: none; font: inherit; cursor: pointer; color: inherit; font-weight: 700; }
+.nav-drop-menu {
+  position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  background: #fff; min-width: 140px; border-radius: 12px; padding: 8px;
+  box-shadow: var(--shadow); display: none; flex-direction: column; gap: 4px;
+}
+.nav-dropdown:hover .nav-drop-menu { display: flex; }
+
+/* ============================================================
+   ✅ 1-2. hero 아래 스크롤 유도 화살표(움직이는 박스) “투명” 복구
+   - hero 레이아웃/텍스트는 유지
+============================================================ */
+.scroll-down{
+  position:fixed;
+  left:50%;
+  bottom:40px;
+
+  /* ✅ transform(바운스) 충돌 방지: translate 속성으로 중앙 정렬/애니메이션 처리 */
+  translate:-50% 0;
+
+  width:40px;
+  height:40px;
+  border-radius:999px;
+
+  /* ✅ 투명(유리 느낌) */
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.35);
+  backdrop-filter:blur(10px);
+
+  z-index:3;
+
+  box-shadow:0 10px 30px rgba(0,0,0,.12);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+
+  /* ✅ 인트로: 위로 올라온 뒤, 기존 바운스 애니메이션이 이어서 실행 */
+  opacity:0;
+  animation:
+    scrollIntroUp .9s cubic-bezier(.2,.8,.2,1) both,
+    scrollBounce 2s infinite .9s;
+}
+
+.scroll-down::before{
+  content:"";
+  width:8px;
+  height:8px;
+  border-right:2px solid rgba(0,0,0,.65);
+  border-bottom:2px solid rgba(0,0,0,.65);
+  transform:rotate(45deg);
+  margin-top:-4px;
+}
+
+@keyframes scrollIntroUp{
+  from{ opacity:0; transform: translate(-50%, 18px); }
+  to{ opacity:1; transform: translate(-50%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .scroll-down{
+    animation:none !important;
+    opacity:1 !important;
+    transform: translate(-50%, 0) !important; /* ✅ translate 속성 X, transform으로 */
+  }
+}
+
+/* ✅ 50% 프레임은 반드시 keyframes 안에 있어야 함 */
+@keyframes scrollBounce{
+  0%, 100%{ transform: translate(-50%, 0); }
+  50%{ transform: translate(-50%, 10px); }
+}
+
+
+
+/* ============================================================
+   ✅ 2. Hero & 검색바 (요청대로 “유지”)
+============================================================ */
+.hero{ height:100vh; min-height:680px; position:relative; padding-top:var(--headerH); overflow:hidden; }
+
+/* ✅ Welcome 문구: 화면 정중앙 + 인트로(위로 올라오는) 애니메이션 */
+.hero-copy{
+  position:fixed;
+  left:50%;
+  top:50%;
+  transform:translate(-50%, -50%);
+
+  z-index:1;  /* ✅ 6 → 1 (sheet가 위에서 덮도록) */
+
+  text-align:center;
+  width:min(980px, calc(100% - 48px));
+  pointer-events:none;
+
+  opacity:0;
+  translate: 0 18px;
+  animation: heroIntroUp .9s cubic-bezier(.2,.8,.2,1) both;
+}
+.hero-copy--center{ top:50%; }
+.hero-copy--top{ top: 28vh; }
+
+@keyframes heroIntroUp{
+  from{ opacity:0; translate: 0 18px; }
+  to{ opacity:1; translate: 0 0; }
+}
+
+.hero-title{
+  font-family:var(--scriptFont);
+  font-weight:800;
+  font-size:80px;
+  color:#fff;
+  text-shadow:0 8px 26px rgba(0,0,0,.35);
+}
+
+.hero-pill{ display:inline-block; }
+
+.hero-copy.is-hidden{
+  opacity:0;
+  transform: translate(-50%, -50%) translateY(-10px);
+  transition: opacity .22s ease, transform .22s ease;
+}
+
+/* ✅ hero 타이틀 래퍼(구조상 hero-pill이 남아있어도 동일하게 보이게) */
+.hero-pill{ display:inline-block; }
+
+/* ✅ JS(initSheetLift)가 토글하는 상태 - welcome 문구 자연스럽게 숨김 */
+.hero-copy.is-hidden{
+  opacity:0;
+  transform: translate(-50%, -50%) translateY(-10px);
+  transition: opacity .22s ease, transform .22s ease;
+}
+
+/* ============================================================
+   ✅ 3. Sheet(흰색 바닥) / 블록 / 카드 UI (누락 복구)
+   - 여기 부분이 빠지면 "hero 아래가 흰색으로 안 깔리고", 카드가 기본 a태그처럼만 보여서
+     'hero바 CSS가 다 날아간 것처럼' 느껴짐
+============================================================ */
+
+/* JS가 세팅하는 --sheetLift를 반영(없으면 0으로) */
+.sheet{
+  --sheetLift: var(--sheetLift, 0);
+  position:relative;
+  z-index:5;
+  background:#fff;
+  border-radius:56px 56px 0 0;
+  padding:72px 0 50px;
+  border-top:1px solid rgba(0,0,0,.06);
+
+  /* ✅ hero 위로 살짝 끌어올리는 느낌(스크롤 시 자연스럽게)
+     - 기존(transform)은 '페인트만' 위로 올라가서 문서 흐름은 그대로라,
+       페이지 하단에 빈 여백이 생기고 footer가 분리되어 보일 수 있음.
+     - margin-top으로 올리면 흐름도 같이 이동해서 footer가 딱 붙음. */
+  margin-top: calc(-1px * var(--sheetLift, 0));
+}
+
+.block{ padding:40px 0; }
+
+.block-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:16px;
+  margin-bottom:24px;
+}
+
+.block-title{
+  font-size:28px;
+  font-weight:900;
+  margin:0;
+}
+
+/* index.jsp에서 쓰는 클래스 */
+.block-sub{
+  margin:0;
+  color:#888;
+  font-size:14px;
+  font-weight:400;
+}
+.block-sub--hint{ color:#888; font-size:14px; }
+
+/* ✅ 카드 기본 UI */
+.post-card{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  background:#fff;
+  border-radius:24px;
+  overflow:hidden;
+  border:1px solid rgba(0,0,0,.08); /* 카드 전체 외곽선 */
+  box-shadow:0 10px 26px rgba(0,0,0,.05);
+  transition: transform .25s cubic-bezier(0.2,0,0.2,1), box-shadow .25s ease;
+}
+.post-card:hover{
+  transform: translateY(-10px);
+  box-shadow:0 20px 40px rgba(0,0,0,.12);
+}
+
+.post-img{
+  width:100%;
+  height:var(--homeCardImgH);
+  background-size:cover;
+  background-position:center;
+  border-bottom:1px solid #eee; /* 이미지 아래 회색 라인 */
+}
+
+.post-body{
+  padding:24px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  flex-grow:1;
+  background:#fff;
+}
+
+.post-title{
+  font-size:20px;
+  font-weight:700;
+  color:#111;
+  margin:0;
+}
+
+.post-meta { color: #6b7280; font-size: 14px; padding-bottom: 12px; border-bottom: none; /* 두 번째 경계선 제거 */ }
+
+.post-tags { margin-top: 12px; display: flex; gap: 8px; }
+.tag {
+  font-size: 13px; font-weight: 600; color: #2f6fed;
+  background: rgba(47, 111, 237, 0.08); padding: 4px 10px; border-radius: 8px;
+}
+
+
+/* ============================================================
+   ✅ 4. Marquee & Slider (문법 에러 수정 + 화살표 버튼 유지)
+============================================================ */
+.marquee { overflow: hidden; }
+.marquee__track {
+  display: flex;
+  gap: var(--homeCardGap);
+  will-change: transform;
+  transform: translate3d(0,0,0);
+  animation: marquee 30s linear infinite; /* no-js fallback */
+}
+.marquee .post-card { flex: 0 0 var(--homeCardW); }
+.marquee__track.is-js{
+  animation: none !important; /* JS 제어 시 CSS 애니메이션 끔 */
+}
+
+/* ✅ 빨간 에러 원인: keyframes 문법 깨짐 → 정상 구문으로 복구 */
+@keyframes marquee {
+  from { transform: translate3d(0,0,0); }
+  to { transform: translate3d(-50%,0,0); }
+}
+
+.recommend-wrap { position: relative; }
+
+/* ✅ 맞춤형 여행 추천: 3장 뷰 + 인기 카드와 동일 크기 */
+.recommend-wrap{
+  max-width: calc(var(--homeCardW) * 3 + var(--homeCardGap) * 2);
+  margin: 0 auto;
+}
+#recommendCards {
+  scroll-behavior: smooth;
+  display: flex; gap: var(--homeCardGap); overflow-x: auto; padding: 10px 0 30px;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+#recommendCards::-webkit-scrollbar { display: none; }
+#recommendCards .post-card { flex: 0 0 var(--homeCardW); }
+
+
+/* ============================================================
+   ✅ 4-2. (병합 추가) 맞춤형 추천 카드 덱 "안 보임" 방지용 호환 셀렉터
+   - index.jsp에서 id/class명이 조금 달라도 카드가 무조건 보이게 한다.
+   - 기존 #recommendCards 규칙은 그대로 유지, 아래는 "추가"만.
+============================================================ */
+
+/* 다양한 마크업(id/class) 호환 */
+#recommendCards,
+.recommend-cards,
+.recommend-deck,
+.recommend-track{
+  display:flex;
+  gap: var(--homeCardGap);
+  overflow-x:auto;
+  padding:10px 0 30px;
+  scroll-behavior:smooth;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+
+/* 스크롤바 숨김(webkit) */
+#recommendCards::-webkit-scrollbar,
+.recommend-cards::-webkit-scrollbar,
+.recommend-deck::-webkit-scrollbar,
+.recommend-track::-webkit-scrollbar{ display:none; }
+
+/* 카드 폭 고정(3장 뷰) */
+#recommendCards .post-card,
+.recommend-cards .post-card,
+.recommend-deck .post-card,
+.recommend-track .post-card{
+  flex: 0 0 var(--homeCardW);
+}
+
+/* 혹시 부모가 display:none으로 덮이는 경우를 대비(최소 안전장치) */
+.recommend-wrap{ display:block; }
+
+/* 화살표 박스 버튼 복구 */
+.arrow-btn {
+  position: absolute; top: 45%; transform: translateY(-50%);
+  width: 48px; height: 48px; border-radius: 50%;
+  background: #fff; border: 1px solid #eee; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex; align-items:center; justify-content: center; cursor: pointer; z-index: 10;
+}
+.arrow-left { left: -24px; }
+.arrow-right { right: -24px; }
+
+.segmented { display: flex; gap: 8px; }
+.seg-btn { padding: 10px 20px; border-radius: 999px; border: 1px solid #e2e8f0; background: #fff; cursor: pointer; font-weight: 600; color: #64748b; }
+.seg-btn.active { background: #2f6fed; color: #fff; border-color: #2f6fed; }
+
+/* ============================================================
+   ✅ 5. (추가) 메인(index.jsp / index.js) 오버레이 카드 공통 스타일
+============================================================ */
+.post-card.post-card--overlay{
+  position: relative;
+  display: block;
+  height: var(--homeCardH);
+  border-radius: 18px;
+  overflow: hidden;
+  text-decoration: none;
+  border: 0;
+  background: transparent;
+}
+
+.post-card--overlay .card-bg{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit: cover;
+  z-index:1;
+}
+
+.post-card--overlay .card-grad{
+  position:absolute; inset:0;
+  background: linear-gradient(to top, rgba(0,0,0,.82) 0%, rgba(0,0,0,0) 60%);
+  z-index:2;
+  pointer-events:none;
+}
+
+.post-card--overlay .card-body{
+  position:absolute; left:0; right:0; bottom:0;
+  padding: 22px;
+  z-index:3;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.post-card--overlay .card-title{
+  font-size:22px;
+  font-weight:800;
+  color:#fff;
+  text-shadow:0 2px 4px rgba(0,0,0,.5);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.post-card--overlay .card-sub{
+  font-size:14px;
+  color: rgba(255,255,255,.92);
+  text-shadow:0 1px 3px rgba(0,0,0,.5);
+}
+
+.wish-btn{
+  position:absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.55);
+  background: rgba(255,255,255,.92);
+  box-shadow: 0 8px 18px rgba(0,0,0,.18);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  line-height:1;
+  font-size: 18px;
+  padding:0;
+}
+.wish-btn:active{ transform: scale(.96); }
+.wish-btn.active{ background: rgba(255,255,255,.98); }
+
+/* =========================================================
+   [수정] 햄버거 메뉴 버튼 -> 마이페이지 스타일 프로필 아바타로 변경
+   ========================================================= */
+
+/* 1. ✅ 기존 햄버거 잔재(검은 선, SVG, span, ::before) 완벽하게 숨기기 */
+.btn-menu *, 
+.header-menu-btn *,
+.hamburger-btn * { 
+  display: none !important; /* 내부의 모든 태그(선) 삭제 */
+}
+.btn-menu::before, 
+.header-menu-btn::before,
+.hamburger-btn::before {
+  display: none !important;
+  content: none !important; /* ::before로 만든 선 삭제 */
+}
+
+/* 2. 버튼 자체를 동그란 아바타 틀로 변경 + 내부 정렬 기준점 설정 */
+.btn-menu, 
+.header-menu-btn,
+.hamburger-btn {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  border-radius: 50% !important; 
+  background: linear-gradient(135deg, #e0f2fe, #dbeafe) !important; 
+  border: 1px solid rgba(47,111,237,.15) !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
+  display: inline-block !important; 
+  padding: 0 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  
+  /* 글씨 등 잔여물 투명화 */
+  color: transparent !important;
+  font-size: 0 !important;
+  
+  /* 위치 교정 */
+  margin: 0 0 0 16px !important;
+  position: relative !important;
+  line-height: 0 !important; 
+  overflow: hidden !important; 
+  vertical-align: middle !important;
+  top: auto !important;
+  bottom: auto !important;
+  right: auto !important;
+  transform: none !important; 
+}
+
+/* 3. 마우스 올렸을 때(Hover) 액션 */
+.btn-menu:hover, 
+.header-menu-btn:hover,
+.hamburger-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 14px rgba(50, 100, 255, 0.15) !important;
+}
+
+/* 4. 사람 모양 아이콘을 동그라미 안에 완벽한 중앙 배치 */
+.btn-menu::after, 
+.header-menu-btn::after,
+.hamburger-btn::after {
+  content: "" !important;
+  display: block !important;
+  width: 28px !important; 
+  height: 28px !important;
+  
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2360a5fa'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E") !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important; 
+}
+
+

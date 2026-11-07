@@ -1,0 +1,346 @@
+/* =========================================================
+   community-review-view.css
+   - community/view.jsp(후기 상세) 전용
+   - 커뮤니티 목록 UI(community.css)와 "사이드바"는 그대로 두고
+     상세 페이지 본문만 Trip.com 느낌의 2열 레이아웃으로 정리
+   - JSP/로직/변수명은 건드리지 않음
+   ========================================================= */
+
+:root{
+  /* ✅ 커뮤니티(블루 톤) 배경이 비치도록 완전 흰색 느낌을 줄임 */
+  --rv-surface: rgba(255,255,255,.80);
+  --rv-border: rgba(15,23,42,.10);
+  --rv-shadow: 0 18px 50px rgba(2, 6, 23, .10);
+  --rv-text: #0f172a;
+  --rv-muted: rgba(15,23,42,.62);
+  --rv-primary: #1e88e5;
+  --rv-soft: rgba(30,136,229,.10);
+}
+
+body[data-theme="dark_disabled"]{
+  --rv-surface: rgba(15, 23, 42, .62);
+  --rv-border: rgba(148,163,184,.16);
+  --rv-shadow: 0 18px 55px rgba(0,0,0,.35);
+  --rv-text: rgba(226,232,240,.95);
+  --rv-muted: rgba(226,232,240,.68);
+  --rv-primary: #6cb6ff;
+  --rv-soft: rgba(108,182,255,.14);
+}
+
+/* community.css가 mypage.css를 import 해서 기본 h1/버튼 등이 흔들릴 수 있어
+   상세 페이지는 rv- 접두어로 강하게 스코프를 잡아줌 */
+.rv-card{
+  background: var(--rv-surface);
+  border: 1px solid var(--rv-border);
+  border-radius: 22px;
+  box-shadow: var(--rv-shadow);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+/* ===== 상단 헤더 ===== */
+.rv-header{
+  padding: 22px 24px 14px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--rv-border);
+}
+
+.rv-h1{
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--rv-text);
+  letter-spacing: -.2px;
+}
+
+.rv-sub{
+  margin-top: 10px;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap: 10px;
+  color: var(--rv-muted);
+  font-size: 13px;
+}
+
+.rv-dot{ opacity: .7; }
+.rv-muted{ color: var(--rv-muted); }
+
+/* ===== 버튼 ===== */
+.rv-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(30,136,229,.22);
+  background: var(--rv-soft);
+  color: var(--rv-primary);
+  font-weight: 800;
+  text-decoration:none;
+  cursor:pointer;
+}
+.rv-btn:hover{ filter: brightness(.98); }
+
+.rv-btn.rv-btn-ghost{
+  background: transparent;
+  border-color: var(--rv-border);
+  color: var(--rv-text);
+}
+
+/* ===== 2열 레이아웃 ===== */
+.rv-grid{
+  padding: 18px 24px 18px;
+  display: grid;
+  grid-template-columns: minmax(380px, 1.25fr) minmax(320px, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.rv-left,
+.rv-side{
+  min-width: 0;
+}
+
+/* ===== 사진 영역 ===== */
+.rv-photo{
+  display:flex;
+  flex-direction:column;
+  gap: 12px;
+}
+
+.rv-photo-main{
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--rv-border);
+  background: rgba(148,163,184,.12);
+}
+
+.rv-photo-main img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display:block;
+}
+
+.rv-nav{
+  position:absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.35);
+  background: rgba(0,0,0,.25);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+.rv-prev{ left: 12px; }
+.rv-next{ right: 12px; }
+
+.rv-photo-count{
+  position:absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.32);
+  color: rgba(255,255,255,.92);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* 썸네일은 Trip.com처럼 "대표 사진 아래" 가로 스트립으로 배치 */
+.rv-thumbs{
+  /* ✅ 대표 사진 아래 썸네일은 "왼쪽 사진 영역" 안에서만 가로로 스크롤되게 고정 */
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 0;
+  scroll-snap-type: x mandatory;
+  height: 180px; 
+}
+.rv-thumbs::-webkit-scrollbar{ height: 8px; }
+
+.rv-thumb{
+  flex: 0 0 auto;
+  width: 160PX;
+  height: 160PX;
+  padding: 0;
+  border: 1px solid var(--rv-border);
+  background: rgba(148,163,184,.12);
+  border-radius: 14px;
+  overflow:hidden;
+  cursor: pointer;
+  scroll-snap-align: start;
+}
+
+.rv-thumb img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display:block;
+  transition: transform .2s ease;
+}
+.rv-thumb:hover img{ transform: scale(1.04); }
+.rv-thumb.is-active{
+  outline: 2px solid rgba(30,136,229,.40);
+  outline-offset: 1px;
+}
+
+.rv-photo-empty{
+  width: 100%;
+  border: 1px dashed rgba(148,163,184,.35);
+  border-radius: 18px;
+  background: rgba(148,163,184,.08);
+  padding: 22px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap: 10px;
+}
+
+.rv-photo-empty-box{
+  width: 100%;
+  height: 220px;
+  border-radius: 16px;
+  background: rgba(148,163,184,.10);
+  border: 1px solid var(--rv-border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color: var(--rv-muted);
+  font-weight: 800;
+}
+
+/* ===== 오른쪽 패널 ===== */
+.rv-side{
+  display:flex;
+  flex-direction:column;
+  gap: 14px;
+}
+
+.rv-side-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 12px;
+}
+
+.rv-user{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.rv-user-avatar{
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: rgba(30,136,229,.16);
+  color: var(--rv-primary);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight: 900;
+}
+body[data-theme="dark_disabled"] .rv-user-avatar{
+  background: rgba(108,182,255,.18);
+}
+
+.rv-user-name{
+  font-weight: 900;
+  color: var(--rv-text);
+  font-size: 14px;
+}
+
+.rv-user-sub{
+  color: var(--rv-muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.rv-rating{
+  flex: 0 0 auto;
+  display:flex;
+  align-items:center;
+  gap: 8px;
+}
+
+.rv-stars{
+  letter-spacing: 1px;
+  font-size: 15px;
+  line-height: 1;
+  color: #ffb300;
+}
+
+.rv-score{
+  font-weight: 900;
+  color: var(--rv-text);
+  font-size: 13px;
+}
+
+/* 내용 카드(스크롤) */
+.rv-body{
+  border: 1px solid var(--rv-border);
+  border-radius: 18px;
+  background: rgba(148,163,184,.06);
+  padding: 16px;
+  min-height: 0;
+
+  /* ✅ 오른쪽 패널 안에서만 스크롤 가능하게 */
+  max-height: calc(100vh - 240px);
+  overflow: auto;
+}
+
+.rv-body-title{
+  font-weight: 900;
+  color: var(--rv-text);
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.rv-content{
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--rv-text);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 1100px){
+  .rv-grid{
+    grid-template-columns: 1fr;
+  }
+  .rv-thumb{ width: 72px; height: 72px; }
+  .rv-body{
+    max-height: none;
+  }
+}
+
+@media (max-width: 560px){
+  .rv-header{ padding: 18px 16px 12px; }
+  .rv-grid{ padding: 16px; }
+  .rv-thumb{ width: 64px; height: 64px; }
+  .rv-nav{ width: 38px; height: 38px; }
+}

@@ -1,0 +1,38 @@
+.ui-toast-wrap{
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  /* ✅ Auth 모달보다 항상 위에 보이도록 최상단 */
+  z-index: 40000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.ui-toast{
+  min-width: 280px;
+  max-width: 520px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.3;
+  box-shadow: 0 12px 30px rgba(0,0,0,.18);
+  background: rgba(17,17,17,.92);
+  color: #fff;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+
+.ui-toast.is-show{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+:root[data-theme="dark_disabled"] .ui-toast{
+  background: rgba(255,255,255,.92);
+  color: #111;
+}

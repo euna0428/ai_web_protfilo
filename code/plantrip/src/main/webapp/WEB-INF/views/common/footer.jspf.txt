@@ -1,0 +1,361 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+  .ptf-footer{
+    margin-top:auto; /* ✅ 짧은 페이지에서 하단 고정 */
+    padding-bottom: 24px;
+    background:#fff;
+    color:#111827;
+    position:relative;
+    z-index:10;
+    margin-top:0;
+    /* ✅ 전체 페이지 공통 footer: 가로 스크롤(100vw) 방지 */
+    width:100%;
+    margin-left:0;
+    box-sizing:border-box;
+    overflow-x:hidden;
+}
+
+  /* 상단 파란 포인트 라인(그대로 유지) */
+  .ptf-footer__topbar{
+    height:3px;
+    background: linear-gradient(90deg,#2f6fed 0%, #5b8cff 50%, #2f6fed 100%);
+  }
+
+  /* 링크 메뉴 영역(그대로 유지) */
+  .ptf-footer__nav{
+    border-bottom:1px solid #e5e7eb;
+    padding:14px 0;
+    background:#fff;
+  }
+  .ptf-footer__nav-inner{
+    max-width:1200px;
+    margin:0 auto;
+    padding:0 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .ptf-footer__nav-links{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .ptf-footer__nav-links a{
+    font-size:13px;
+    font-weight:600;
+    color:#374151;
+    text-decoration:none;
+    padding:4px 14px;
+    border-right:1px solid #d1d5db;
+    transition:color .15s;
+  }
+  .ptf-footer__nav-links a:first-child{ padding-left:0; }
+  .ptf-footer__nav-links a:last-child{ border-right:none; }
+  .ptf-footer__nav-links a:hover{ color:#2f6fed; }
+  .ptf-footer__nav-links a.pt-highlight{
+    color:#2f6fed;
+    font-weight:800;
+  }
+
+ /* ========== 메인 정보 영역 (로고 + 프로젝트 정보) ========== */
+  /* 메인 정보 영역(큰 박스) */
+  .ptf-footer__body{
+    padding:32px 0 0;              /* ✅ 아래는 bottombar가 따로 있으니 0 */
+    border-bottom:1px solid #e5e7eb;
+    background:#fff;
+  }
+  .ptf-footer__body-inner{
+    max-width:1200px;
+    margin:0 auto;
+    padding:0 24px 22px;           /* ✅ 박스 안 내용 아래 여백 */
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:48px;
+    align-items:start;
+  }
+
+  .ptf-footer__brand-logo{
+    font-size:24px;
+    font-weight:900;
+    color:#111827;
+    letter-spacing:-.3px;
+    margin-bottom:10px;
+  }
+  .ptf-footer__brand-logo span{ color:#2f6fed; }
+
+/* ---- 왼쪽: 브랜드 설명 텍스트 ---- */
+  .ptf-footer__brand-desc{
+    font-size:13px;
+    color:#6b7280;
+    line-height:1.6;
+    margin:0;
+  }
+
+/* ---- 오른쪽: 프로젝트 정보 영역 ---- */
+  .ptf-footer__info{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .ptf-footer__info-row{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:6px 20px;
+    font-size:13px;
+    color:#374151;
+  }
+  .ptf-footer__info-row .pt-sep{ color:#d1d5db; }
+  .ptf-footer__info-row strong{ font-weight:700; color:#111827; }
+
+  .ptf-footer__contact-item{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    color:#374151;
+    margin-top:4px;
+  }
+  .ptf-footer__contact-item a{
+    color:#374151;
+    text-decoration:underline;
+    text-underline-offset:3px;
+    transition:color .15s;
+  }
+  .ptf-footer__contact-item a:hover{ color:#2f6fed; }
+  .ptf-footer__contact-item .pt-icon{
+    width:18px;
+    height:18px;
+    background:#f3f4f6;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+  }
+
+  /* ✅ 동그라미 문구를 "화살표 박스 안"에 붙이는 하단 바 */
+  .ptf-footer__bottombar{
+    background:#f3f4f6;                 /* ✅ 회색(연한) 배경으로 '붙어' 보이게 */
+    border-top:1px solid #e5e7eb;       /* ✅ 박스 안에서 딱 붙는 구분선 */
+    padding:12px 0;
+  }
+  .ptf-footer__bottombar-inner{
+    max-width:1200px;
+    margin:0 auto;
+    padding:0 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;      /* ✅ 좌/우 */
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .ptf-footer__copy,
+  .ptf-footer__note{
+    margin:0;
+    font-size:13px;
+    line-height:1.5;
+    color:rgba(17,24,39,.70);
+  }
+  .ptf-footer__note{ text-align:right; }
+
+ 
+
+  @media (max-width:860px){
+    .ptf-footer__body-inner{ grid-template-columns:1fr; gap:24px; }
+    .ptf-footer__nav-links a{ font-size:12px; padding:4px 10px; }
+  }
+  @media (max-width:768px){
+    .ptf-footer__bottombar-inner{
+      flex-direction:column;
+      align-items:flex-start;
+    }
+    .ptf-footer__note{ text-align:left; }
+  }
+
+  /* ===== Floating 고객센터 (기존 UI 그대로) ===== */
+  .cs-fab{
+    position:fixed;
+    right:26px;
+    bottom:26px;
+    z-index:9999;
+    height:56px;
+    min-width:78px;
+    padding:10px 14px;
+    border-radius:999px;
+    background:rgba(47,111,237,.92);
+    backdrop-filter:blur(6px);
+    box-shadow:0 18px 40px rgba(0,0,0,.18);
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    border:1px solid rgba(255,255,255,.18);
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+    text-decoration:none;
+  }
+  .cs-fab__icon{
+    width:38px;
+    height:38px;
+    border-radius:999px;
+    background:#fff;
+    color:#2f6fed;
+    display:grid;
+    place-items:center;
+    font-weight:900;
+    font-size:18px;
+    flex:0 0 auto;
+  }
+  .cs-fab__label{
+    color:#fff;
+    font-weight:900;
+    font-size:14px;
+    letter-spacing:-.2px;
+    max-width:0;
+    opacity:0;
+    transform:translateX(6px);
+    overflow:hidden;
+    white-space:nowrap;
+    transition:max-width .22s ease, opacity .18s ease, transform .22s ease;
+  }
+  .cs-fab:hover{
+    background:rgba(47,111,237,1);
+    transform:translateY(-2px);
+    box-shadow:0 22px 50px rgba(0,0,0,.22);
+  }
+  .cs-fab:hover .cs-fab__label{
+    max-width:140px;
+    opacity:1;
+    transform:translateX(0);
+  }
+  .cs-fab:focus-visible{
+    outline:none;
+    box-shadow:0 0 0 4px rgba(47,111,237,.25), 0 22px 50px rgba(0,0,0,.22);
+  }
+
+  /* ===== 맨 위로 버튼 (고객센터 위에) ===== */
+  .top-fab{
+    position:fixed;
+    right:26px;
+    bottom:92px; /* 고객센터 위 */
+    z-index:9999;
+    width:56px;
+    height:56px;
+    border-radius:999px;
+    border:1px solid rgba(17,24,39,.10);
+    background:#fff;
+    box-shadow:0 18px 40px rgba(0,0,0,.14);
+    display:none; /* 스크롤 시 JS로 표시 */
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .top-fab:hover{
+    transform:translateY(-2px);
+    box-shadow:0 22px 50px rgba(0,0,0,.18);
+  }
+  .top-fab svg{
+    width:22px;
+    height:22px;
+    stroke:#2f6fed;
+  }
+
+</style>
+
+<footer class="ptf-footer" role="contentinfo">
+
+  <!-- 상단 포인트 라인 -->
+  <div class="ptf-footer__topbar"></div>
+
+  <!-- 링크 메뉴 -->
+  <nav class="ptf-footer__nav">
+    <div class="ptf-footer__nav-inner">
+      <div class="ptf-footer__nav-links">
+        <a href="#" class="pt-highlight">개인정보 취급방침</a>
+        <a href="#">이용약관</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 메인 정보(화살표 친 큰 박스) -->
+  <div class="ptf-footer__body">
+    <div class="ptf-footer__body-inner">
+
+      <div class="ptf-footer__brand">
+        <div class="ptf-footer__brand-logo">Plan<span>Trip</span></div>
+        <p class="ptf-footer__brand-desc">
+          나만의 여행을 더 쉽게,<br>더 똑똑하게.
+        </p>
+      </div>
+
+      <div class="ptf-footer__info">
+        <div class="ptf-footer__info-row">
+          <span>프로젝트 : <strong>PlanTrip (교육용 팀 프로젝트)</strong></span>
+          <span class="pt-sep">|</span>
+          <span>소속 : <strong>백석대학교</strong></span>
+          <span class="pt-sep">|</span>
+          <span>전화번호 : <strong>1234 - 1234</strong></span>
+        </div>
+
+        <div class="ptf-footer__info-row">
+          <span>충청남도 천안시 동남구 백석대학로 1 &nbsp;백석대학교 (214호 강의실)</span>
+        </div>
+
+        <div class="ptf-footer__contact-item">
+          <span class="pt-icon">✉</span>
+          <a href="mailto:plantrip.team@baekseok.ac.kr">plantrip.team@baekseok.ac.kr</a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ✅ 동그라미 문구를 "화살표 박스 안" 맨 아래에 붙임 -->
+    <div class="ptf-footer__bottombar">
+      <div class="ptf-footer__bottombar-inner">
+        <p class="ptf-footer__copy">© <span id="ptFooterYear"></span> PlanTrip. All Rights Reserved.</p>
+        <p class="ptf-footer__note">본 사이트는 교육용 프로젝트이며 실제 예약/결제 기능을 제공하지 않습니다.</p>
+      </div>
+    </div>
+  </div>
+
+</footer>
+
+
+<!-- Floating: 맨 위로 / 고객센터 -->
+<button class="top-fab" type="button" aria-label="맨 위로">
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M12 5l-7 7m7-7l7 7M12 5v14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+  </svg>
+</button>
+
+<a class="cs-fab" href="${pageContext.request.contextPath}/support" aria-label="고객센터">
+  <span class="cs-fab__icon" aria-hidden="true">?</span>
+  <span class="cs-fab__label">고객센터</span>
+</a>
+
+
+
+<script>
+  document.body.setAttribute('data-ctx', '${pageContext.request.contextPath}');
+</script>
+<script src="${pageContext.request.contextPath}/js/fabs.js"></script>
+
+<script>
+  (function(){
+    var el = document.getElementById('ptFooterYear');
+    if(el) el.textContent = new Date().getFullYear();
+  })();
+</script>
+
+<!-- ✅ Toast UI : 전 페이지 공통 (로그인/저장/안내 메시지) -->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/ui-toast.css" />
+<script defer src="${pageContext.request.contextPath}/js/ui-toast.js"></script>
+
+<!-- ✅ Auth Modal (Login/Signup) : 전 페이지 공통 -->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/auth-modal.css" />
+<script defer src="${pageContext.request.contextPath}/js/auth-modal.js"></script>
+<script defer src="${pageContext.request.contextPath}/js/auth-guard.js"></script>
+<%@ include file="/WEB-INF/views/common/authModal.jspf" %>

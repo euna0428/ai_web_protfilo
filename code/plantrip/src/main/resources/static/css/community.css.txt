@@ -1,0 +1,603 @@
+@import url("/css/mypage.css");
+
+/* 커뮤니티: 헤더 공통 적용 후 사이드바 제거(단일 컬럼) */
+.cm-shell{
+  width: 100%;
+  min-height: 100vh;
+  background: #f7fafc;
+  padding: 22px 20px 120px;
+  display: block;
+  max-width: 1200px;
+  margin: calc(var(--headerH, 84px) + 14px) auto 0;
+}
+
+/* 후기 작성(write) 페이지만 더 내리기: 기존 .cm-shell보다 뒤에서 덮어쓰기 */
+.cm-shell.cm-shell--write{
+  margin-top: calc(var(--headerH)) !important;
+}
+
+/* 메인 영역은 페이지 스크롤(footer가 자연스럽게 붙도록) */
+.cm-main{
+  display:flex;
+  flex-direction:column;
+  gap: 16px;
+}
+
+/* 사이드바 제거로 미사용(호환 유지용) */
+.cm-side{ display:none; }
+.cm-shell .mp-side{ display:none; }
+
+/* 메인 카드가 화면 높이를 더 많이 차지하도록 */
+.cm-main > .mp-card{
+  flex: 1 1 auto;
+  display:flex;
+  flex-direction:column;
+  min-height: 0;
+}
+.cm-main > .mp-card > .mp-card-body{ overflow: visible; }
+
+/* 헤더 우측 "총 n건" 표기 */
+.cm-count{
+  font-weight: 900;
+  font-size: 16px;
+  letter-spacing: -0.2px;
+  color: rgba(255,255,255,.92);
+}
+:root[data-theme="light"] .cm-count{
+  color: rgba(15,23,42,.92);
+}
+
+/* 커뮤니티 상단 필터 영역 */
+.cm-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 14px;
+  margin-bottom: 25px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255,255,255,.14);
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.cm-toolbar::after{
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255,255,255,.14);
+  bottom: -12px;
+}
+
+:root[data-theme="light"] .cm-toolbar{
+  border-bottom-color: rgba(15,23,42,.12);
+}
+
+.cm-filters{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cm-filter-row{
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items:center;
+  justify-content:flex-end;
+}
+
+/* 후기 작성 버튼 컨테이너 */
+.cm-write-row{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  margin-top: -20px;
+  margin-bottom: 10px;
+  margin-right: 22px; 
+}
+
+/* ✅ 수정됨 1: 후기 작성 버튼 디자인 강조 (색상, 받침대 선 추가) */
+.cm-write-link{
+  display: inline-block;
+  background: transparent;
+  box-shadow: none;
+  font-size: 14px;
+  font-weight: 900;
+  color: #3264ff !important; /* 항상 파란색으로 시선 유도 */
+  border: none;
+  border-bottom: 2px solid #3264ff; /* 텍스트 밑 받침대 선 */
+  padding: 0 0 3px 0; /* 선과 글씨 사이 간격 */
+  border-radius: 0;
+  letter-spacing: -0.1px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.cm-write-link:hover{
+  color: #1f4bcf !important; /* 마우스 올렸을 때 더 진한 파란색 */
+  border-bottom-color: #1f4bcf;
+  transform: translateY(-1px); /* 살짝 위로 뜨는 효과 */
+}
+
+/* ✅ 수정됨 2: 잃어버린 검색바 CSS 디자인 복구 */
+.cm-search{
+  flex: 1 1 auto;
+}
+.cm-search input{
+  flex: 1 1 560px;
+  width: 560px;
+  max-width: 680px;
+  height: 44px; /* 높이 고정 */
+  padding: 0 16px; /* 좌우 여백 */
+  border: 1px solid #cbd5e1; /* 연한 테두리 */
+  border-radius: 10px; /* 둥근 모서리 */
+  background: #ffffff; /* 하얀 배경 */
+  color: #111111;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s;
+}
+.cm-search input:focus{
+  border-color: #3264ff; /* 포커스 시 테두리 파란색 */
+  box-shadow: 0 0 0 3px rgba(50, 100, 255, 0.15); /* 부드러운 빛 퍼짐 효과 */
+}
+
+/* 셀렉트 박스도 검색바와 높이/테두리 통일 */
+.cm-select{
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #111111;
+  padding: 0 14px;
+  font-weight: 800;
+  outline: none;
+  cursor: pointer;
+}
+
+/* 커뮤니티 테이블을 마이페이지 무드로 */
+.cm-table-wrap{
+  margin-top: 8px;
+  overflow-x:auto;
+  border-radius: 16px;
+}
+.cm-table{
+  width:100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* ✅ 수정됨 3: 테이블 은은한 세로줄 추가 및 여백 조율 */
+.cm-table th,
+.cm-table td{
+  padding: 12px 12px;
+  font-size: 13px;
+  color: rgba(255,255,255,.86);
+  white-space: nowrap;
+  text-align: center;
+  border-right: 1px solid rgba(0,0,0,.06); /* 은은한 세로줄 추가 */
+}
+.cm-table th:last-child,
+.cm-table td:last-child{
+  border-right: none; /* 마지막 열은 세로줄 삭제 */
+}
+
+/* 헤더 스타일 */
+.cm-table th{
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(255,255,255,.78);
+  background: rgba(255,255,255,.10);
+  border-bottom: 1px solid rgba(255,255,255,.14);
+}
+
+/* ✅ 수정됨 4: 별점과 여행지 넓이 및 간격 띄우기 */
+.cm-table th:nth-child(1),
+.cm-table td:nth-child(1){
+  width: 90px; /* 별점 넓이 고정 */
+  text-align: center;
+}
+/* ✅ 수정됨: 여행지(2번째 컬럼) 헤더와 글씨 모두 정중앙 정렬 */
+.cm-table th:nth-child(2),
+.cm-table td:nth-child(2){
+  text-align: center !important; /* 강제로 중앙 정렬 */
+  padding-left: 0 !important;    /* 기존에 들어있던 좌측 여백 제거 */
+}
+
+/* ✅ 추가: 제목(3번째 컬럼)만 가독성을 위해 왼쪽 정렬 유지 */
+/*.cm-table th:nth-child(3),
+.cm-table td:nth-child(3){
+  text-align: left !important;
+  padding-left: 15px;
+}*/
+
+.cm-table tr + tr td{
+  border-top: 1px solid rgba(255,255,255,.10);
+}
+
+.cm-table td.cm-wrap{
+  white-space: normal;
+  line-height: 1.35;
+}
+
+.cm-title-link{
+  color: inherit;
+  text-decoration: none;
+  font-weight: 900;
+}
+.cm-title-link:hover{
+  text-decoration: underline;
+}
+
+.cm-muted{
+  color: rgba(15,23,42,.72) !important;
+  font-weight: 800;
+}
+:root[data-theme="dark_disabled"] .cm-muted{
+  color: rgba(255,255,255,.70) !important;
+}
+
+:root[data-theme="light"] .cm-col-date,
+:root[data-theme="light"] .cm-col-date .cm-muted{
+  color: rgba(15,23,42,.78) !important;
+}
+:root[data-theme="dark_disabled"] .cm-col-date,
+:root[data-theme="dark_disabled"] .cm-col-date .cm-muted{
+  color: rgba(255,255,255,.80) !important;
+}
+
+/* 별점 표시 */
+.cm-stars{
+  display:inline-flex;
+  gap: 2px;
+  font-size: 13px;
+  line-height: 1;
+}
+.cm-star{
+  opacity: .30;
+  color: rgba(15,23,42,.55);
+  transform: translateY(-.5px);
+}
+.cm-star.is-on{
+  opacity: 1;
+  color: #ffb300;
+}
+:root[data-theme="dark_disabled"] .cm-star{
+  color: rgba(226,232,240,.55);
+}
+
+.cm-linkbtn{
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: rgba(255,255,255,.90);
+  cursor: pointer;
+  text-decoration: underline;
+  font: inherit;
+  font-weight: 800;
+}
+:root[data-theme="light"] .cm-linkbtn{ color: rgba(15,23,42,.82); }
+.cm-linkbtn:hover{ color: rgba(255,255,255,.98); }
+
+.cm-empty{
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.08);
+  border-radius: 16px;
+  padding: 14px 14px;
+  color: rgba(255,255,255,.86);
+}
+.cm-empty .sub{ margin-top: 4px; font-size: 12px; color: rgba(255,255,255,.62); }
+
+/* 글쓰기 폼 스타일... */
+.cm-form{
+  display:flex;
+  flex-direction:column;
+  gap: 12px;
+  max-width: 980px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.cm-form .cm-field:first-of-type > label{ display:none; }
+
+.cm-two-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: end;
+}
+.cm-two-label{
+  display:block;
+  font-size: 12px;
+  color: rgba(255,255,255,.62);
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+:root[data-theme="light"] .cm-two-label{ color: rgba(0,0,0,.55); }
+
+@media (max-width: 860px){ .cm-two-grid{ grid-template-columns: 1fr; } }
+
+.cm-field label{
+  display:block;
+  font-size: 12px;
+  color: rgba(255,255,255,.62);
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+.cm-field input,
+.cm-field textarea,
+.cm-field select{
+  width:100%;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.90);
+  padding: 12px 12px;
+  font-size: 14px;
+  outline:none;
+}
+.cm-field select option{
+  background: #0b1220;
+  color: rgba(255,255,255,.92);
+}
+.cm-field textarea{ min-height: 220px; resize: vertical; }
+.cm-field input::placeholder,
+.cm-field textarea::placeholder{ color: rgba(255,255,255,.55); }
+.cm-field input:focus,
+.cm-field textarea:focus,
+.cm-field select:focus{
+  border-color: rgba(255,255,255,.28);
+  box-shadow: 0 0 0 4px rgba(255,255,255,.10);
+}
+
+.rv-tip{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+  padding: 0;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  margin-bottom: 8px;
+}
+.rv-tip-ico{
+  width: 24px; height: 24px; border-radius: 999px;
+  display:flex; align-items:center; justify-content:center;
+  color: rgba(30,136,229,.95); background: rgba(30,136,229,.10);
+  flex: 0 0 auto;
+}
+.rv-tip-ico svg{ width: 16px; height: 16px; display:block; }
+.rv-tip-title{ font-weight: 900; font-size: 14px; color: rgba(30,41,59,.92); line-height: 1.25; }
+.rv-tip-sub{ margin-top: 2px; font-size: 13px; color: rgba(71,85,105,.75); line-height: 1.35; }
+
+.cm-actions{
+  display:flex; gap: 10px; align-items:center; justify-content: flex-end;
+  width: 100%; max-width: 100%; margin-top: 14px;
+}
+.cm-primary{
+  border: 0; background: rgba(31,111,235,.95); color:#fff;
+  border-radius: 14px; padding: 12px 14px; font-weight: 900; cursor:pointer;
+}
+.cm-primary:hover{ filter: brightness(.98); }
+.cm-ghost{
+  border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.90); border-radius: 14px; padding: 12px 14px;
+  font-weight: 900; cursor:pointer;
+}
+.cm-ghost:hover{ background: rgba(255,255,255,.12); }
+
+@media (max-width: 860px){
+  .cm-shell{ grid-template-columns: 1fr; padding: 18px; }
+}
+
+/* ===== Light theme override ===== */
+:root[data-theme="light"] .cm-select{
+  border: 1px solid rgba(47,111,237,.22);
+  background: rgba(255,255,255,.90); color: #0f172a;
+}
+:root[data-theme="light"] .cm-table{
+  background: rgba(255,255,255,.90);
+  border: 1px solid rgba(47,111,237,.18);
+  box-shadow: 0 18px 40px rgba(0,0,0,.10);
+}
+:root[data-theme="light"] .cm-table th,
+:root[data-theme="light"] .cm-table td{
+  color: #0f172a;
+  border-right: 1px solid rgba(47,111,237,.12); /* 라이트 테마 세로줄 */
+}
+:root[data-theme="light"] .cm-table th:last-child,
+:root[data-theme="light"] .cm-table td:last-child{
+  border-right: none;
+}
+:root[data-theme="light"] .cm-table th{
+  background: rgba(47,111,237,.10);
+  border-bottom: 1px solid rgba(47,111,237,.18);
+  color: rgba(15,23,42,.88);
+}
+:root[data-theme="light"] .cm-table tr + tr td{
+  border-top: 1px solid rgba(0,0,0,.08);
+}
+:root[data-theme="light"] .cm-table tr:hover td{
+  background: rgba(47,111,237,.06);
+}
+
+:root[data-theme="light"] .cm-empty{ border: 1px solid rgba(47,111,237,.18); background: rgba(255,255,255,.86); color: #0f172a; }
+:root[data-theme="light"] .cm-empty .sub{ color: rgba(15,23,42,.62); }
+:root[data-theme="light"] .cm-field input::placeholder, :root[data-theme="light"] .cm-field textarea::placeholder{ color: rgba(0,0,0,.45); }
+:root[data-theme="light"] .cm-field label{ color: rgba(0,0,0,.55); }
+:root[data-theme="light"] .cm-field input, :root[data-theme="light"] .cm-field textarea, :root[data-theme="light"] .cm-field select{ border: 1px solid rgba(47,111,237,.18); background: rgba(255,255,255,.90); color: #0f172a; }
+:root[data-theme="light"] .cm-field select option{ background: #ffffff; color: #0f172a; }
+:root[data-theme="light"] .cm-ghost{ border: 1px solid rgba(47,111,237,.18); background: rgba(47,111,237,.06); color: #0f172a; }
+:root[data-theme="light"] .cm-linkbtn{ color: #0f172a; }
+:root[data-theme="light"] .cm-primary{ background: linear-gradient(135deg, rgba(47,111,237,1), rgba(64,165,255,1)); box-shadow: 0 10px 24px rgba(47,111,237,.28); }
+
+/* =========================
+   Pagination (리스트 하단)
+   ========================= */
+.cm-pagination{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap: 8px;
+  padding: 18px 0 6px;
+  margin-top:auto !important;
+}
+
+/* ✅ 수정됨 5: 마이페이지와 완벽히 동일한 동그란 페이지네이션 적용 */
+.cm-page{
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% !important; /* 완전한 동그라미 */
+  border: 1px solid #eee !important;
+  background: #fff !important;
+  color: #555 !important;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.cm-page:hover{
+  background: #f0f4ff !important;
+  color: #3264ff !important;
+  border-color: #3264ff !important;
+}
+.cm-page.is-active{
+  background: #3264ff !important;
+  color: #fff !important;
+  border-color: #3264ff !important;
+  box-shadow: 0 4px 10px rgba(50, 100, 255, 0.2) !important;
+}
+.cm-page--arrow{
+  font-size: 18px;
+  line-height: 1;
+}
+.cm-page.is-disabled{
+  opacity: .35;
+  pointer-events: none;
+}
+
+
+/* Floating 고객센터 버튼 */
+.cs-fab{
+  position:fixed; right:26px; bottom:26px; z-index:9999;
+  height:56px; min-width:78px; padding:10px 14px; border-radius:999px;
+  background:rgba(47,111,237,.92); backdrop-filter:blur(6px);
+  box-shadow:0 18px 40px rgba(0,0,0,.18); display:inline-flex;
+  align-items:center; gap:10px; border:1px solid rgba(255,255,255,.18);
+  text-decoration:none;
+}
+.cs-fab__icon{
+  width:38px; height:38px; border-radius:999px; background:#fff;
+  color:#2f6fed; display:grid; place-items:center; font-weight:900; font-size:18px;
+}
+.cs-fab__label{
+  color:#fff; font-weight:900; font-size:14px; letter-spacing:-.2px;
+  max-width:0; opacity:0; transform:translateX(6px); overflow:hidden; white-space:nowrap;
+  transition:max-width .22s ease, opacity .18s ease, transform .22s ease;
+}
+.cs-fab:hover{ background:rgba(47,111,237,1); transform:translateY(-2px); box-shadow:0 22px 50px rgba(0,0,0,.22); }
+.cs-fab:hover .cs-fab__label{ max-width:140px; opacity:1; transform:translateX(0); }
+
+/* 하단 여백 및 기타 UI */
+.cm-shell{ min-height: 100vh; }
+.cm-main > .mp-card{ min-height: auto; }
+.cm-main > .mp-card > .mp-card-body{ display:flex; flex-direction:column; }
+
+.cm-head-right{ display:flex; align-items:center; gap: 12px; justify-content:flex-end; }
+.cm-total{ font-size: 14px; color: rgba(15,23,42,.72); }
+
+.cm-two-select{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cm-two-select select{ height: 44px; padding: 0 14px; }
+@media (max-width: 720px){ .cm-two-select{ grid-template-columns: 1fr; } }
+@media (max-width: 860px){
+  .cm-shell > *{ min-height: auto; }
+  .cm-main > .mp-card{ min-height: auto; }
+}
+
+/* 후기 작성 특수 UI */
+.rvStarSelect{ display:none; }
+.rv-rating{ display:flex; align-items:center; gap: 6px; padding: 4px 0; }
+.rv-star{ width: 28px; height: 28px; border: 0; background: transparent; cursor: pointer; position: relative; padding: 0; }
+.rv-star::before{ content: "★"; position:absolute; inset:0; display:grid; place-items:center; font-size: 22px; color: rgba(148,163,184,.55); transition: transform .12s ease, color .12s ease; }
+.rv-star.is-on::before{ color: rgba(255,193,7,.98); }
+.rv-star.is-hover::before{ color: rgba(255,193,7,.90); }
+.rv-star:hover::before{ transform: translateY(-1px) scale(1.06); }
+.rv-rating-text{ margin-left: 10px; font-size: 13px; font-weight: 700; color: rgba(71,85,105,.85); }
+
+.cm-form textarea{ min-height: 240px; padding: 14px 16px; border-radius: 14px; background: rgba(255,255,255,.70); }
+
+.rv-photo-input{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip: rect(0,0,0,0); border:0; }
+.rv-photo{ position: relative; }
+.rv-photo-head{ display:flex; align-items:center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.rv-photo-sub{ font-size: 13px; color: rgba(71,85,105,.78); }
+.rv-photo-btn{ height: 38px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(148,163,184,.35); background: rgba(255,255,255,.72); font-weight: 800; cursor: pointer; }
+.rv-photo-grid{ display:flex; flex-wrap: wrap; gap: 12px; }
+
+.rv-photo-add, .rv-thumb{ width: 128px; height: 128px; border-radius: 14px; border: 1px solid rgba(148,163,184,.28); background: rgba(255,255,255,.62); overflow: hidden; position: relative; }
+.rv-photo-add{ display:grid; place-items:center; cursor: pointer; user-select:none; }
+.rv-photo-add-ico{ width: 44px; height: 44px; border-radius: 14px; border: 1px dashed rgba(148,163,184,.45); position: relative; opacity: .75; }
+.rv-photo-add-ico::before, .rv-photo-add-ico::after{ content:""; position:absolute; left:50%; top:50%; transform: translate(-50%,-50%); background: rgba(148,163,184,.75); border-radius: 999px; }
+.rv-photo-add-ico::before{ width: 22px; height: 2px; }
+.rv-photo-add-ico::after{ width: 2px; height: 22px; }
+.rv-photo-count{ margin-top: 10px; font-size: 12px; font-weight: 800; color: rgba(71,85,105,.78); }
+
+.rv-thumb img{ width:100%; height:100%; object-fit: cover; transform: scale(1); transition: transform .18s ease; }
+.rv-thumb:hover img{ transform: scale(1.08); }
+.rv-thumb::after{ content:""; position:absolute; inset:0; background: rgba(0,0,0,.06); opacity: 0; transition: opacity .18s ease; }
+.rv-thumb:hover::after{ opacity: 1; }
+.rv-thumb-remove{ position:absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 10px; border: 0; background: rgba(0,0,0,.45); color: #fff; font-weight: 900; cursor: pointer; display: grid; place-items: center; opacity: 0; transform: scale(.96); transition: opacity .18s ease, transform .18s ease; z-index: 4; }
+.rv-thumb-remove svg{ width: 16px; height:16px; fill:#fff; }
+.rv-thumb:hover .rv-thumb-remove{ opacity: 1; transform: scale(1); }
+.rv-photo-hint{ margin-top: 8px; }
+
+.rv-agree{ margin-top: 12px; display:flex; align-items:center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.rv-check{ display:flex; align-items:center; gap: 10px; cursor: pointer; }
+.rv-check input{ display:none; }
+.rv-check-box{ width: 18px; height: 18px; border-radius: 6px; border: 1.6px solid rgba(30,136,229,.55); background: rgba(255,255,255,.72); position: relative; }
+.rv-check input:checked + .rv-check-box{ background: rgba(30,136,229,.95); border-color: rgba(30,136,229,.95); }
+.rv-check input:checked + .rv-check-box::after{ content:""; position:absolute; left: 5px; top: 2px; width: 6px; height: 10px; border: 2px solid #fff; border-top:0; border-left:0; transform: rotate(45deg); }
+.rv-check-text{ font-size: 13px; color: rgba(71,85,105,.82); }
+.rv-links{ font-size: 13px; color: rgba(71,85,105,.72); }
+.rv-links a{ color: rgba(30,136,229,.95); font-weight: 800; text-decoration: none; }
+.rv-links a:hover{ text-decoration: underline; }
+.rv-dot{ margin: 0 6px; opacity: .7; }
+
+.cm-actions{ display:flex; justify-content: flex-end; gap: 10px; }
+.rv-btn{ height: 44px; padding: 0 18px; border-radius: 14px; font-weight: 900; border: 1px solid rgba(148,163,184,.30); cursor: pointer; }
+.rv-btn-primary{ background: rgba(30,136,229,.96); border-color: rgba(30,136,229,.96); color: #fff; box-shadow: 0 12px 26px rgba(30,136,229,.24); }
+.rv-btn-primary:hover{ filter: brightness(1.03); }
+.rv-btn-ghost{ background: rgba(255,255,255,.72); color: rgba(30,41,59,.92); }
+
+.rv-lightbox{ position: fixed; inset: 0; z-index: 9999; display: none; }
+.rv-lightbox[aria-hidden="false"]{ display: block; }
+.rv-lightbox-backdrop{ position: absolute; inset: 0; background: rgba(0,0,0,.55); }
+.rv-lightbox-panel{ position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: min(920px, calc(100vw - 48px)); height: min(680px, calc(100vh - 48px)); background: rgba(255,255,255,.92); border: 1px solid rgba(255,255,255,.20); border-radius: 18px; overflow: hidden; box-shadow: 0 32px 64px rgba(0,0,0,.26); }
+.rv-lightbox-img{ width: 100%; height: 100%; object-fit: contain; background: rgba(0,0,0,.06); }
+.rv-lightbox-close{ position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border-radius: 14px; border: 0; cursor: pointer; background: rgba(0,0,0,.45); color: #fff; font-size: 22px; font-weight: 900; }
+.rv-lightbox-close::before{ content: "×"; }
+
+body.is-lightbox-open{ overflow: hidden; }
+
+@media (max-width: 720px){ .rv-photo-add, .rv-thumb{ width: 110px; height: 110px; } .rv-photo-grid{ gap: 10px; } }
+
+.rv-hover-preview{ position: fixed; z-index: 9999; display: none; width: 360px; height: 240px; border-radius: 14px; overflow: hidden; border: 1px solid rgba(148,163,184,.35); box-shadow: 0 18px 45px rgba(15,23,42,.22); background: rgba(255,255,255,.95); }
+.rv-hover-preview img{ width: 100%; height: 100%; object-fit: contain; background: rgba(2,6,23,.04); }
+
+.rv-cont-wrap{ position: relative; }
+.rv-cont-counter{ position: absolute; right: 14px; bottom: 12px; display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 12px; background: rgba(255,255,255,.78); border: 1px solid rgba(148,163,184,.35); font-size: 12px; color: rgba(15,23,42,.68); backdrop-filter: blur(8px); pointer-events: none; }
+.rv-cont-counter .rv-counter-strong{ color: rgba(15,23,42,.82); font-weight: 700; }
+.rv-cont-counter.is-over{ border-color: rgba(244,91,105,.55); }
+.rv-cont-counter.is-over .rv-counter-strong{ color: rgba(244,91,105,1); }
